@@ -1,4 +1,4 @@
-package com.example.mobile
+package com.example.mobile_app
 
 import android.os.Bundle
 
