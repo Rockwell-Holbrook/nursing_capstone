@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/widgets/carousel_dots.dart';
 import 'package:mobile/widgets/devices_dialog.dart';
 import 'package:mobile/widgets/carousel.dart';
+
 
 class Home extends StatefulWidget {
   @override
@@ -12,6 +14,8 @@ class _HomeState extends State<Home> {
   int _pageNumber;
   int _carouselPage;
   bool _admin;
+  
+  GlobalKey<CarouselDotsState> _keyChild = GlobalKey();
 
   void initState() {
     super.initState();
@@ -63,9 +67,11 @@ class _HomeState extends State<Home> {
                   setState(() {
                     _carouselPage = index;
                   });
+                  _keyChild.currentState.changeDots(index);
                 },
                 submit: () {print('submit');},
               ),
+              CarouselDots(_keyChild),
               Text(_carouselPage.toString()),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
