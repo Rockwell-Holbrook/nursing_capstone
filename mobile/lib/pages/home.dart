@@ -59,14 +59,9 @@ class _HomeState extends State<Home> {
           Column(
             children: <Widget>[
               Carousel(
-                callbackForward: () {
+                callback: (index) {
                   setState(() {
-                    _carouselPage += 1;
-                  });
-                },
-                callbackBackward: () {
-                  setState(() {
-                    _carouselPage -= 1;
+                    _carouselPage = index;
                   });
                 },
                 submit: () {print('submit');},

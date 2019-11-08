@@ -2,20 +2,17 @@ import 'package:flutter/material.dart';
 
 class Carousel extends StatefulWidget {
 
-  final Function callbackForward;
-  final Function callbackBackward;
+  final Function callback;
   final Function submit;
   Carousel({
-    @required this.callbackForward,
-    @required this.callbackBackward,
+    @required this.callback,
     @required this.submit
   });
 
   @override
   _CarouselState createState() => 
     new _CarouselState(
-      callbackForward: callbackForward,
-      callbackBackward: callbackBackward,
+      callback: callback,
       submit: submit
     );
 }
@@ -30,13 +27,11 @@ class _CarouselState extends State<Carousel> {
 
   PageController _pageController;
   int _currentPage;
-  final Function callbackForward;
-  final Function callbackBackward;
+  final Function callback;
   final Function submit;
 
   _CarouselState({
-    @required this.callbackForward,
-    @required this.callbackBackward,
+    @required this.callback,
     @required this.submit
   });
 
@@ -52,10 +47,10 @@ class _CarouselState extends State<Carousel> {
 
   backPage() {
     if (_currentPage > 0) {
-      callbackBackward();
       setState(() {
         _currentPage -= 1;
       });
+      callback(_currentPage);
       _pageController.animateToPage(_currentPage, duration: Duration(milliseconds: 400), curve: Curves.linear );
     } else {
       _pageController.animateToPage(_currentPage, duration: Duration(milliseconds: 400), curve: Curves.linear );
@@ -64,10 +59,10 @@ class _CarouselState extends State<Carousel> {
 
   forwardPage() {
     if (_currentPage < 4) {
-      callbackForward();
       setState(() {
         _currentPage += 1;
       });
+      callback(_currentPage);
       _pageController.animateToPage(_currentPage, duration: Duration(milliseconds: 400), curve: Curves.linear );
     } else {
       _pageController.animateToPage(_currentPage, duration: Duration(milliseconds: 400), curve: Curves.linear );
@@ -136,6 +131,7 @@ class _CarouselState extends State<Carousel> {
                         setState(() {
                         _currentPage = value;
                         });
+                        callback(value);
                       },
                       itemBuilder: (context, index) => itemBuilder(index),
                       itemCount: 3,
