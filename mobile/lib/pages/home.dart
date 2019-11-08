@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/widgets/devices_dialog.dart';
+import 'package:mobile/widgets/carousel.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -9,10 +10,14 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   
   int _pageNumber;
+  int _carouselPage;
+  bool _admin;
 
   void initState() {
     super.initState();
+    _admin = true;
     _pageNumber = 0;
+    _carouselPage = 0;
   }
 
   List<BottomNavigationBarItem> items = [
@@ -30,6 +35,18 @@ class _HomeState extends State<Home> {
     )
   ];
 
+  List<BottomNavigationBarItem> getItems() {
+    List<BottomNavigationBarItem> authorized = [];
+
+    authorized.add(items[0]);
+    if (_admin) {
+      authorized.add(items[1]);
+    }
+    authorized.add(items[2]);
+
+    return authorized;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,19 +56,60 @@ class _HomeState extends State<Home> {
       body: IndexedStack(
         index: _pageNumber,
         children: <Widget>[
-          Container(
-            color: Colors.black,
+          Column(
+            children: <Widget>[
+              Carousel(
+                callbackForward: () {
+                  setState(() {
+                    _carouselPage += 1;
+                  });
+                },
+                callbackBackward: () {
+                  setState(() {
+                    _carouselPage -= 1;
+                  });
+                },
+                submit: () {print('submit');},
+              ),
+              Text(_carouselPage.toString()),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Container(
+                    height: 50,
+                    width: 100,
+                    color: Colors.red,
+                    child: FlatButton(
+                      child: Text('Record'),
+                      onPressed: (){},
+                    )
+                  ),
+                  Container(
+                    height: 50,
+                    width: 100,
+                    color: Colors.red,
+                    child: FlatButton(
+                      child: Text('Review'),
+                      onPressed: (){},
+                    )
+                  ),
+                ],
+              )
+            ],
           ),
-          Container(
+
+          (_admin) ? Container(
             color: Colors.blue,
-          ),
-          DevicesDialog()
+            child: Text(_carouselPage.toString()),
+          ) : Container()//DevicesDialog(),
+
+          //DevicesDialog()
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: items,
+        items: getItems(),
         currentIndex: _pageNumber,
-        type: BottomNavigationBarType.shifting,
+        //type: BottomNavigationBarType.shifting,
         onTap: (index) {
           setState(() {
            _pageNumber = index; 
@@ -60,4 +118,10 @@ class _HomeState extends State<Home> {
       ),
     );
   }
+}
+
+enum RecordinStatus {
+  NORECORDING,
+  ACTIVERECORDING,
+  POSTRECORDING
 }
