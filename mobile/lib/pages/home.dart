@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/widgets/carousel_dots.dart';
 import 'package:mobile/widgets/devices_dialog.dart';
 import 'package:mobile/widgets/carousel.dart';
+import 'package:mobile/widgets/form.dart';
 
 
 class Home extends StatefulWidget {
@@ -92,9 +93,10 @@ class _HomeState extends State<Home> {
                       child: Text('Review'),
                       onPressed: (){},
                     )
-                  ),
+                  )
                 ],
-              )
+              ), 
+              BeatsForm(),
             ],
           ),
 
