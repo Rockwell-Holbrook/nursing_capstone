@@ -22,7 +22,9 @@ class _CarouselState extends State<Carousel> {
   List<String> photos = [
     "graphics/aorticPoint.jpg",
     "graphics/hearsound1.jpg",
-    "graphics/heartsound2.jpg"
+    "graphics/heartsound2.jpg",
+    "graphics/aorticPoint.jpg",
+    "graphics/hearsound1.jpg"
   ];
 
   PageController _pageController;
@@ -94,7 +96,7 @@ class _CarouselState extends State<Carousel> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Image.asset(
-                photos[(index % 3)]
+                photos[(index % 5)]
               ),
             ],
           ),
@@ -134,7 +136,7 @@ class _CarouselState extends State<Carousel> {
                         callback(value);
                       },
                       itemBuilder: (context, index) => itemBuilder(index),
-                      itemCount: 3,
+                      itemCount: 5,
                     ),
                   ),
                 ),

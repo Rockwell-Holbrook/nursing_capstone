@@ -72,7 +72,6 @@ class _HomeState extends State<Home> {
                 submit: () {print('submit');},
               ),
               CarouselDots(_keyChild),
-              Text(_carouselPage.toString()),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
@@ -102,9 +101,8 @@ class _HomeState extends State<Home> {
           (_admin) ? Container(
             color: Colors.blue,
             child: Text(_carouselPage.toString()),
-          ) : Container()//DevicesDialog(),
-
-          //DevicesDialog()
+          ) : DevicesDialog(),
+          DevicesDialog()
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
