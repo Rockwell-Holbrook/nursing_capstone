@@ -3,6 +3,8 @@ import 'package:mobile/widgets/carousel_dots.dart';
 import 'package:mobile/widgets/devices_dialog.dart';
 import 'package:mobile/widgets/carousel.dart';
 import 'package:mobile/widgets/form.dart';
+import 'package:mobile/widgets/ekgvisual.dart';
+import 'package:flutter_blue/flutter_blue.dart';
 
 
 class Home extends StatefulWidget {
@@ -15,7 +17,8 @@ class _HomeState extends State<Home> {
   int _pageNumber;
   int _carouselPage;
   bool _admin;
-  
+  BluetoothDevice _device;
+
   GlobalKey<CarouselDotsState> _keyChild = GlobalKey();
 
   void initState() {
@@ -23,6 +26,8 @@ class _HomeState extends State<Home> {
     _admin = true;
     _pageNumber = 0;
     _carouselPage = 0;
+    _device = null;
+    _getCurrentDevices();
   }
 
   List<BottomNavigationBarItem> items = [
@@ -40,7 +45,7 @@ class _HomeState extends State<Home> {
     )
   ];
 
-  List<BottomNavigationBarItem> getItems() {
+  List<BottomNavigationBarItem> _getItems() {
     List<BottomNavigationBarItem> authorized = [];
 
     authorized.add(items[0]);
@@ -50,6 +55,18 @@ class _HomeState extends State<Home> {
     authorized.add(items[2]);
 
     return authorized;
+  }
+
+  void _getCurrentDevices() {
+    print(FlutterBlue.instance.toString());
+    Future<List<BluetoothDevice>> connections = FlutterBlue.instance.connectedDevices;
+    print(connections);
+    connections.then((onValue) {
+      print(onValue.toString());
+      setState(() {
+        _device = onValue[0];
+      });
+    });
   }
 
   @override
@@ -82,7 +99,22 @@ class _HomeState extends State<Home> {
                     color: Colors.red,
                     child: FlatButton(
                       child: Text('Record'),
-                      onPressed: (){},
+                      onPressed: () async {
+                        await showDialog(
+                          context: context,
+                          builder: (_) => Padding(
+                            padding: EdgeInsets.fromLTRB(0, 200, 0, 200),
+                            child: Container(
+                              height: 100,
+                              width: 100,
+                              color: Colors.red,
+                              child: (_device == null) ? 
+                                CircularProgressIndicator() 
+                                : EKGVisual(device: _device),
+                            ),
+                          )
+                        );
+                      },
                     )
                   ),
                   Container(
@@ -108,7 +140,7 @@ class _HomeState extends State<Home> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: getItems(),
+        items: _getItems(),
         currentIndex: _pageNumber,
         //type: BottomNavigationBarType.shifting,
         onTap: (index) {
