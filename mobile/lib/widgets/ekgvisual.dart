@@ -33,13 +33,12 @@ class _EKGVisualState extends State<EKGVisual> {
       return;
     }
 
-    new Timer(const Duration(seconds: 15), () {
-      if (!isReady) {
-        disconnectFromDevice();
-      }
-    });
+    // new Timer(const Duration(seconds: 15), () {
+    //   if (!isReady) {
+    //     disconnectFromDevice();
+    //   }
+    // });
 
-    await widget.device.connect();
     discoverServices();
   }
 
@@ -64,6 +63,7 @@ class _EKGVisualState extends State<EKGVisual> {
     services.forEach((service) {
       print(widget.device.toString());
       print(services.toString());
+      print(service.uuid.toString());
       if (service.uuid.toString() == SERVICE_UUID) {
         service.characteristics.forEach((characteristic) {
           if (characteristic.uuid.toString() == CHARACTERISTIC_UUID) {
@@ -117,7 +117,7 @@ class _EKGVisualState extends State<EKGVisual> {
                     traceDust.add(double.tryParse(currentValue) ?? 0);
 
                     return Center(
-                        child: Column(
+                      child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Expanded(
