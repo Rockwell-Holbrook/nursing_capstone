@@ -112,17 +112,6 @@ class FindDevicesScreen extends StatelessWidget {
                       onTap: () => Navigator.of(context)
                           .push(MaterialPageRoute(builder: (context) {
                         r.device.connect(autoConnect: false);
-                        try {
-                          Future<List<BluetoothService>> services = r.device.discoverServices();
-                          services.then((values) {
-                            for(int i = 0; i < values.length; i ++) {
-                              print(values[i].toString());
-                            }
-                          });
-                        } catch (error) {
-                          print(error.toString());
-                        }
-
                         return DeviceScreen(device: r.device);
                       })),
                     ),
