@@ -113,8 +113,8 @@ class _EKGVisualState extends State<EKGVisual> {
                         padding: 10.0,
                         backgroundColor: Colors.black,
                         traceColor: Colors.red,
-                        yAxisMax: 5.0,
-                        yAxisMin: 0.0,
+                        yAxisMax: 3500.0,
+                        yAxisMin: 1000.0,
                         dataSet: traceDust,
                       );
                     } else {
