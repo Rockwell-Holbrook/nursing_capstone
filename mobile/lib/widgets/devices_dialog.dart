@@ -53,7 +53,7 @@ class FindDevicesScreen extends StatelessWidget {
     List<Widget> listNoBlanks = [];
     for(int i = 0; i < listWithBlanks.length; i++) {
       ScanResultTile tile = listWithBlanks[i];
-      if(tile.result.advertisementData.localName.contains("BEATS")) {
+      if(tile.result.advertisementData.localName.contains("BEATS") || true) {
         listNoBlanks.add(tile);
       }
     }
@@ -111,14 +111,7 @@ class FindDevicesScreen extends StatelessWidget {
                       ///////////////////////////////////////////Add modal here so that a modal appears instead
                       onTap: () => Navigator.of(context)
                           .push(MaterialPageRoute(builder: (context) {
-                        r.device.connect();
-                        Future<List<BluetoothService>> services = r.device.discoverServices();
-                        services.then((values) {
-                          for(int i = 0; i < values.length; i ++) {
-                            //print(values[i].toString());
-                          }
-                        });
-
+                        r.device.connect(autoConnect: false);
                         return DeviceScreen(device: r.device);
                       })),
                     ),
@@ -217,7 +210,7 @@ class DeviceScreen extends StatelessWidget {
                   text = 'DISCONNECT';
                   break;
                 case BluetoothDeviceState.disconnected:
-                  onPressed = () => device.connect();
+                  onPressed = () => device.connect(autoConnect: false);
                   text = 'CONNECT';
                   break;
                 default:

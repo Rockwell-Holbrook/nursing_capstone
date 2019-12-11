@@ -60,7 +60,7 @@ class _HomeState extends State<Home> {
   void _getCurrentDevices() {
     print(FlutterBlue.instance.toString());
     Future<List<BluetoothDevice>> connections = FlutterBlue.instance.connectedDevices;
-    print(connections);
+    print(connections.toString());
     connections.then((onValue) {
       print(onValue.toString());
       setState(() {
@@ -100,6 +100,7 @@ class _HomeState extends State<Home> {
                     child: FlatButton(
                       child: Text('Record'),
                       onPressed: () async {
+                        _getCurrentDevices();
                         await showDialog(
                           context: context,
                           builder: (_) => Padding(
