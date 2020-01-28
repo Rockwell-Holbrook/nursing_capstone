@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
 import 'package:mobile/widgets/carousel_dots.dart';
 import 'package:mobile/widgets/devices_dialog.dart';
 import 'package:mobile/widgets/carousel.dart';
@@ -6,7 +7,7 @@ import 'package:mobile/widgets/form.dart';
 import 'package:mobile/widgets/ekgvisual.dart';
 import 'package:mobile/widgets/wavGenerator.dart';
 import 'package:flutter_blue/flutter_blue.dart';
-
+import 'package:audiofileplayer/audiofileplayer.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -141,7 +142,13 @@ class _HomeState extends State<Home> {
                     color: Colors.red,
                     child: FlatButton(
                       child: Text('Review'),
-                      onPressed: (){},
+                      onPressed: (){
+                        WavGenerator wav = new WavGenerator("soundFile$_pageNumber", [0]);
+                        Future<File> file = wav.localFile;
+                        file.then((value) {
+                          Audio.load(value.toString())..play()..dispose();
+                        });
+                      },
                     )
                   )
                 ],

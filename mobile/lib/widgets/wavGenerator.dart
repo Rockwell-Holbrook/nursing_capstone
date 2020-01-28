@@ -38,7 +38,7 @@ class WavGenerator {
   }
 
   ///Get a single file
-  Future<File> get _localFile async {
+  Future<File> get localFile async {
     final path = await _localPath;
     return File('$path/$filename.wav');
   }
@@ -58,7 +58,7 @@ class WavGenerator {
   ///Get the audio block requested and return the file
   Future<int> playAudio() async {
     try {
-      final file = await _localFile;
+      final file = await localFile;
       // Read the file
       int contents = (await file.readAsBytes()) as int;
 
@@ -110,7 +110,7 @@ class WavGenerator {
       _outputBytes.addAll(ByteUtils.numberAsByteList(bits[i], 4));
     }
 
-    final file = await _localFile;
+    final file = await localFile;
     return file.writeAsBytes(bits);
   }
 }
