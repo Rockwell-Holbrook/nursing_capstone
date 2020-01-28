@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-
-import 'widgets/devices_dialog.dart';
 import 'pages/home.dart';
 
 void main() => runApp(MyApp());

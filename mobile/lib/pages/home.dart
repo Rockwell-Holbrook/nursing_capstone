@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blue/gen/flutterblue.pbserver.dart';
 import 'package:mobile/widgets/carousel_dots.dart';
 import 'package:mobile/widgets/devices_dialog.dart';
 import 'package:mobile/widgets/carousel.dart';
 import 'package:mobile/widgets/form.dart';
 import 'package:mobile/widgets/ekgvisual.dart';
+import 'package:mobile/widgets/wavGenerator.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 
 
@@ -20,6 +22,7 @@ class _HomeState extends State<Home> {
   BluetoothDevice _device;
 
   GlobalKey<CarouselDotsState> _keyChild = GlobalKey();
+  GlobalKey<EKGVisualState> _ekg = GlobalKey();
 
   void initState() {
     super.initState();
@@ -55,6 +58,16 @@ class _HomeState extends State<Home> {
     authorized.add(items[2]);
 
     return authorized;
+  }
+
+  void _writeWav() {
+    List<int> bytes = [];
+    for(int i = 0; i < _ekg.currentState.traceDust.length; i++) {
+      bytes.add(_ekg.currentState.traceDust as int);
+    }
+    WavGenerator wav =
+        new WavGenerator("soundFile$_pageNumber", bytes);
+    wav.writeAudio();
   }
 
   void _getCurrentDevices() {
@@ -111,10 +124,15 @@ class _HomeState extends State<Home> {
                               color: Colors.red,
                               child: (_device == null) ? 
                                 CircularProgressIndicator() 
-                                : EKGVisual(device: _device),
+                                : EKGVisual(
+                                  key: _ekg,
+                                  device: _device
+                                ),
                             ),
                           )
-                        );
+                        ).then((value) {
+                          _writeWav();
+                        });
                       },
                     )
                   ),
