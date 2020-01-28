@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_blue/gen/flutterblue.pbserver.dart';
 import 'package:mobile/widgets/carousel_dots.dart';
 import 'package:mobile/widgets/devices_dialog.dart';
 import 'package:mobile/widgets/carousel.dart';
