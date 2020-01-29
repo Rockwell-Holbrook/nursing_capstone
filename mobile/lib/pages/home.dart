@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:mobile/widgets/carousel_dots.dart';
@@ -7,7 +9,6 @@ import 'package:mobile/widgets/form.dart';
 import 'package:mobile/widgets/ekgvisual.dart';
 import 'package:mobile/widgets/wavGenerator.dart';
 import 'package:flutter_blue/flutter_blue.dart';
-import 'package:audiofileplayer/audiofileplayer.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -30,7 +31,6 @@ class _HomeState extends State<Home> {
     _pageNumber = 0;
     _carouselPage = 0;
     _device = null;
-    _getCurrentDevices();
   }
 
   List<BottomNavigationBarItem> items = [
@@ -62,23 +62,53 @@ class _HomeState extends State<Home> {
 
   void _writeWav() {
     List<int> bytes = [];
-    for(int i = 0; i < _ekg.currentState.traceDust.length; i++) {
-      bytes.add(_ekg.currentState.traceDust as int);
+    if (_ekg.currentState.traceDust != null) {
+      for(int i = 0; i < _ekg.currentState.traceDust.length; i++) {
+        bytes.add(_ekg.currentState.traceDust[i].toInt());
+      }
     }
     WavGenerator wav =
-        new WavGenerator("soundFile$_pageNumber", bytes);
+        new WavGenerator("soundFileSample$_pageNumber", bytes);
     wav.writeAudio();
   }
 
   void _getCurrentDevices() {
-    print(FlutterBlue.instance.toString());
     Future<List<BluetoothDevice>> connections = FlutterBlue.instance.connectedDevices;
-    print(connections.toString());
-    connections.then((onValue) {
-      print(onValue.toString());
-      setState(() {
-        _device = onValue[0];
-      });
+    connections.then((onValue) async {
+      if (onValue.length == 0) {
+        await showDialog(
+          context: context,
+          builder: (_) => Padding(
+            padding: EdgeInsets.fromLTRB(0, 200, 0, 200),
+            child: Text('No connected devices')
+          )
+        ).then((value) {
+          return;
+        });
+      } else {
+        setState(() {
+          _device = onValue[0];
+        });
+        await showDialog(
+            context: context,
+            builder: (_) => Padding(
+              padding: EdgeInsets.fromLTRB(0, 200, 0, 200),
+              child: Container(
+                height: 100,
+                width: 100,
+                color: Colors.red,
+                child: (_device == null) ? 
+                  CircularProgressIndicator() 
+                  : EKGVisual(
+                    key: _ekg,
+                    device: _device
+                  ),
+              ),
+            )
+          ).then((value) {
+            _writeWav();
+          });
+      }
     });
   }
 
@@ -114,25 +144,6 @@ class _HomeState extends State<Home> {
                       child: Text('Record'),
                       onPressed: () async {
                         _getCurrentDevices();
-                        await showDialog(
-                          context: context,
-                          builder: (_) => Padding(
-                            padding: EdgeInsets.fromLTRB(0, 200, 0, 200),
-                            child: Container(
-                              height: 100,
-                              width: 100,
-                              color: Colors.red,
-                              child: (_device == null) ? 
-                                CircularProgressIndicator() 
-                                : EKGVisual(
-                                  key: _ekg,
-                                  device: _device
-                                ),
-                            ),
-                          )
-                        ).then((value) {
-                          _writeWav();
-                        });
                       },
                     )
                   ),
@@ -143,17 +154,22 @@ class _HomeState extends State<Home> {
                     child: FlatButton(
                       child: Text('Review'),
                       onPressed: (){
-                        WavGenerator wav = new WavGenerator("soundFile$_pageNumber", [0]);
+                        WavGenerator wav = new WavGenerator("soundFileSample$_pageNumber", [0]);
                         Future<File> file = wav.localFile;
                         file.then((value) {
-                          Audio.load(value.toString())..play()..dispose();
+                          Future<Uint8List> test = value.readAsBytes();
+                          test.then((nextValue) {
+                            String newStuff = nextValue.toString();
+                            print(test);
+                          });
+                          print(test);
                         });
                       },
                     )
                   )
                 ],
               ), 
-              BeatsForm(),
+              //BeatsForm(),
             ],
           ),
 

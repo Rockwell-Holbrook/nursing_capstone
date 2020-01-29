@@ -26,14 +26,15 @@ class WavGenerator {
   int numSeconds;
   int sampleCount;
   final int _frequency = 44100;
-  final int _bitRate = 16;
+  final int _bitRate = 32;
   final _numChannels = 1; 
+  int _dataChunkSizeIndex = 0;
   List<int> _outputBytes = <int>[];
   final Utf8Encoder _utf8encoder = Utf8Encoder(); 
 
   ///Get the current directory
   Future<String> get _localPath async {
-    final directory = await getApplicationDocumentsDirectory();
+    final directory = await getExternalStorageDirectory();
     return directory.path;
   }
 
@@ -57,7 +58,7 @@ class WavGenerator {
 
   ///Get the audio block requested and return the file
   Future<int> playAudio() async {
-    try {
+    try { 
       final file = await localFile;
       // Read the file
       int contents = (await file.readAsBytes()) as int;
@@ -86,13 +87,13 @@ class WavGenerator {
     _outputBytes.addAll(
         ByteUtils.numberAsByteList(SUB_CHUNK_SIZE, 4, bigEndian: false));
     _outputBytes
-        .addAll(ByteUtils.numberAsByteList(AUDIO_FORMAT, 2, bigEndian: false));
+        .addAll(ByteUtils.numberAsByteList(AUDIO_FORMAT, 2, bigEndian: false));//try this as a byte
     _outputBytes
         .addAll(ByteUtils.numberAsByteList(_numChannels, 2, bigEndian: false));
     _outputBytes
-        .addAll(ByteUtils.numberAsByteList(_frequency, 4, bigEndian: false));
+        .addAll(ByteUtils.numberAsByteList(_frequency, 4, bigEndian: false));//try this as a byte
     _outputBytes
-        .addAll(ByteUtils.numberAsByteList(byteRate, 4, bigEndian: false));
+        .addAll(ByteUtils.numberAsByteList(byteRate, 4, bigEndian: false));//try this as a byte
     _outputBytes
         .addAll(ByteUtils.numberAsByteList(blockAlign, 2, bigEndian: false));
     _outputBytes
@@ -101,6 +102,7 @@ class WavGenerator {
 
   void _writeDataChunkHeader() {
     _outputBytes.addAll(_utf8encoder.convert('data'));
+    _dataChunkSizeIndex = _outputBytes.length;
     _outputBytes.addAll(ByteUtils.numberAsByteList(0, 4, bigEndian: false));
   }
 
@@ -110,8 +112,33 @@ class WavGenerator {
       _outputBytes.addAll(ByteUtils.numberAsByteList(bits[i], 4));
     }
 
+    _finalize();
+    print('breakpoint');
     final file = await localFile;
-    return file.writeAsBytes(bits);
+    return file.writeAsBytes(_outputBytes);
+  }
+
+    void _updateRiffChunkSize() {
+    _outputBytes.replaceRange(
+        RIFF_CHUNK_SIZE_INDEX,
+        RIFF_CHUNK_SIZE_INDEX + 4,
+        ByteUtils.numberAsByteList(
+            _outputBytes.length - (RIFF_CHUNK_SIZE_INDEX + 4), 4,
+            bigEndian: false));
+  }
+
+  void _updateDataChunkSize() {
+    _outputBytes.replaceRange(
+        _dataChunkSizeIndex,
+        _dataChunkSizeIndex + 4,
+        ByteUtils.numberAsByteList(
+            _outputBytes.length - (_dataChunkSizeIndex + 4), 4,
+            bigEndian: false));
+  }
+
+  void _finalize() {
+    _updateRiffChunkSize();
+    _updateDataChunkSize();
   }
 }
 

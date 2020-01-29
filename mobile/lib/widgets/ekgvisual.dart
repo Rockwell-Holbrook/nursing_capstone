@@ -15,8 +15,8 @@ class EKGVisual extends StatefulWidget {
 }
 
 class EKGVisualState extends State<EKGVisual> {
-  final String SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";//"fe59bfa8-7fe3-4a05-9d94-99fadc69faff";//"91c10d9c-aaef-42bd-b6d6-8a648c19213d";//"4fafc201-1fb5-459e-8fcc-c5c9c331914b";
-  final String CHARACTERISTIC_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";//"eea2e8a0-89f0-4985-a1e2-d91dc4a52632";//"99d1064e-4517-46aa-8fb4-6be64dd1a1f1";//"beb5483e-36e1-4688-b7f5-ea07361b26a8";
+  final String SERVICE_UUID = "f44f8b7b-951c-4009-9169-a9d9751115a6";
+  final String CHARACTERISTIC_UUID = "23d0b3fe-793e-488a-aaae-aec2999efd55";
   bool isReady;
   Stream<List<int>> stream;
   List<double> traceDust = List();
@@ -105,7 +105,6 @@ class EKGVisualState extends State<EKGVisual> {
                       if(currentValue == "") {
                         currentValue = "0.0";
                       }
-                      print('new data');
                       print(double.tryParse(currentValue));
                       traceDust.add(double.tryParse(currentValue) ?? 0);
                       return Oscilloscope(
@@ -113,8 +112,8 @@ class EKGVisualState extends State<EKGVisual> {
                         padding: 10.0,
                         backgroundColor: Colors.black,
                         traceColor: Colors.red,
-                        yAxisMax: 5000000.0,
-                        yAxisMin: -5000000.0,
+                        yAxisMax: 200000000.0,
+                        yAxisMin: -500000000.0,
                         dataSet: traceDust,
                       );
                     } else {
