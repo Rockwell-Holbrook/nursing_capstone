@@ -163,6 +163,8 @@ class _HomeState extends State<Home> {
                             print(test);
                           });
                           print(test);
+                          _ekg.currentState.stream = null;
+                          _ekg.currentState.dispose();
                         });
                       },
                     )

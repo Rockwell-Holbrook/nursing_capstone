@@ -28,6 +28,11 @@ class EKGVisualState extends State<EKGVisual> {
     connectToDevice();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   connectToDevice() async {
     if (widget.device == null) {
       print('no device detected');

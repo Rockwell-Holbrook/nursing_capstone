@@ -72,7 +72,7 @@ class WavGenerator {
 
   void _initializeWave() {
     _outputBytes.addAll(_utf8encoder.convert('RIFF'));
-    _outputBytes.addAll(ByteUtils.numberAsByteList(0, 4, bigEndian: false));
+    _outputBytes.addAll(ByteUtils.numberAsByteList((bits.length * 4) + 36, 4, bigEndian: false));//0
     _outputBytes.addAll(_utf8encoder.convert('WAVE'));
 
     _createFormatChunk();
@@ -85,9 +85,9 @@ class WavGenerator {
         bitsPerSample = _bitRate;
     _outputBytes.addAll(_utf8encoder.convert('fmt '));
     _outputBytes.addAll(
-        ByteUtils.numberAsByteList(SUB_CHUNK_SIZE, 4, bigEndian: false));
+        ByteUtils.numberAsByteList(16, 4, bigEndian: false));
     _outputBytes
-        .addAll(ByteUtils.numberAsByteList(AUDIO_FORMAT, 2, bigEndian: false));//try this as a byte
+        .addAll(ByteUtils.numberAsByteList(1, 2, bigEndian: false));//try this as a byte
     _outputBytes
         .addAll(ByteUtils.numberAsByteList(_numChannels, 2, bigEndian: false));
     _outputBytes
@@ -103,16 +103,16 @@ class WavGenerator {
   void _writeDataChunkHeader() {
     _outputBytes.addAll(_utf8encoder.convert('data'));
     _dataChunkSizeIndex = _outputBytes.length;
-    _outputBytes.addAll(ByteUtils.numberAsByteList(0, 4, bigEndian: false));
+    _outputBytes.addAll(ByteUtils.numberAsByteList((bits.length * 4), 4, bigEndian: false));
   }
 
   ///Write the sound bytes to file, returning a future that we can wait on later
   Future<File> writeAudio() async {
     for (int i = 0; i < bits.length; i++) {
-      _outputBytes.addAll(ByteUtils.numberAsByteList(bits[i], 4));
+      _outputBytes.addAll(ByteUtils.numberAsByteList(bits[i], 4, bigEndian: false));
     }
 
-    _finalize();
+//    _finalize();
     print('breakpoint');
     final file = await localFile;
     return file.writeAsBytes(_outputBytes);
@@ -120,26 +120,27 @@ class WavGenerator {
 
     void _updateRiffChunkSize() {
     _outputBytes.replaceRange(
-        RIFF_CHUNK_SIZE_INDEX,
-        RIFF_CHUNK_SIZE_INDEX + 4,
+        4,//RIFF_CHUNK_SIZE_INDEX,
+        8,//RIFF_CHUNK_SIZE_INDEX + 4,
         ByteUtils.numberAsByteList(
-            _outputBytes.length - (RIFF_CHUNK_SIZE_INDEX + 4), 4,
+            _outputBytes.length - (8/*RIFF_CHUNK_SIZE_INDEX + 4*/), 4,
             bigEndian: false));
   }
 
   void _updateDataChunkSize() {
+    print(_outputBytes.length - (_dataChunkSizeIndex + 4));
     _outputBytes.replaceRange(
         _dataChunkSizeIndex,
         _dataChunkSizeIndex + 4,
         ByteUtils.numberAsByteList(
-            _outputBytes.length - (_dataChunkSizeIndex + 4), 4,
+            bits.length, 4,
             bigEndian: false));
   }
 
-  void _finalize() {
-    _updateRiffChunkSize();
-    _updateDataChunkSize();
-  }
+  // void _finalize() {
+  //   _updateRiffChunkSize();
+  //   _updateDataChunkSize();
+  // }
 }
 
 class ByteUtils {
