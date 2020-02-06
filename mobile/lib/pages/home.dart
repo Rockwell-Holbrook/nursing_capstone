@@ -1,14 +1,14 @@
+import 'dart:async';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:mobile/widgets/carousel_dots.dart';
 import 'package:mobile/widgets/devices_dialog.dart';
 import 'package:mobile/widgets/carousel.dart';
-import 'package:mobile/widgets/form.dart';
-import 'package:mobile/widgets/ekgvisual.dart';
+import 'package:mobile/widgets/read_bluetooth.dart';
 import 'package:mobile/widgets/wavGenerator.dart';
-import 'package:flutter_blue/flutter_blue.dart';
+import 'package:oscilloscope/oscilloscope.dart';
+import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -20,17 +20,55 @@ class _HomeState extends State<Home> {
   int _pageNumber;
   int _carouselPage;
   bool _admin;
-  BluetoothDevice _device;
+  BluetoothState _bluetoothState = BluetoothState.UNKNOWN;
+  String _address = "";
+  String _name = "";
+
+  Timer _discoverableTimeoutTimer;
+  int _discoverableTimeoutSecondsLeft = 0;
+
+  List<double> audio = [];
 
   GlobalKey<CarouselDotsState> _keyChild = GlobalKey();
-  GlobalKey<EKGVisualState> _ekg = GlobalKey();
 
   void initState() {
     super.initState();
     _admin = true;
     _pageNumber = 0;
     _carouselPage = 0;
-    _device = null;
+
+    FlutterBluetoothSerial.instance.state.then((state) {
+      setState(() { _bluetoothState = state; });
+    });
+
+    Future.doWhile(() async {
+      // Wait if adapter not enabled
+      if (await FlutterBluetoothSerial.instance.isEnabled) {
+        return false;
+      }
+      await Future.delayed(Duration(milliseconds: 0xDD));
+      return true;
+    }).then((_) {
+      // Update the address field
+      FlutterBluetoothSerial.instance.address.then((address) {
+        setState(() { _address = address; });
+      });
+    });
+
+    FlutterBluetoothSerial.instance.name.then((name) {
+      setState(() { _name = name; });
+    });
+
+    // Listen for futher state changes
+    FlutterBluetoothSerial.instance.onStateChanged().listen((BluetoothState state) {
+      setState(() {
+        _bluetoothState = state;
+
+        // Discoverable mode is disabled when Bluetooth gets disabled
+        _discoverableTimeoutTimer = null;
+        _discoverableTimeoutSecondsLeft = 0;
+      });
+    });
   }
 
   List<BottomNavigationBarItem> items = [
@@ -60,56 +98,54 @@ class _HomeState extends State<Home> {
     return authorized;
   }
 
+  void _startReading(BluetoothDevice server) {
+    showDialog(
+      context: context,
+      builder: (_) {
+        ReadBluetooth(
+          server: server,
+          callback: (double data) {
+            setState(() {
+              if(data == null) data = 0.0;
+              audio.add(data);
+              print(data);
+            });
+          }
+        );
+
+        return Padding(
+          padding: EdgeInsets.fromLTRB(0, 150, 0, 150),
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            color: Colors.red,
+            child: Oscilloscope(
+              showYAxis: true,
+              padding: 10.0,
+              backgroundColor: Colors.black,
+              traceColor: Colors.red,
+              yAxisMax: 196149185.0,
+              yAxisMin: -257099457.0,
+              dataSet: audio,
+            )
+          )
+        );
+      }
+    ).then((value) {
+      _writeWav();
+      audio = [];
+    });
+  }
+
   void _writeWav() {
     List<int> bytes = [];
-    if (_ekg.currentState.traceDust != null) {
-      for(int i = 0; i < _ekg.currentState.traceDust.length; i++) {
-        bytes.add(_ekg.currentState.traceDust[i].toInt());
+    if (audio != null) {
+      for(int i = 0; i < audio.length; i++) {
+        bytes.add(audio[i].toInt());
       }
     }
     WavGenerator wav =
         new WavGenerator("soundFileSample$_pageNumber", bytes);
     wav.writeAudio();
-  }
-
-  void _getCurrentDevices() {
-    Future<List<BluetoothDevice>> connections = FlutterBlue.instance.connectedDevices;
-    connections.then((onValue) async {
-      if (onValue.length == 0) {
-        await showDialog(
-          context: context,
-          builder: (_) => Padding(
-            padding: EdgeInsets.fromLTRB(0, 200, 0, 200),
-            child: Text('No connected devices')
-          )
-        ).then((value) {
-          return;
-        });
-      } else {
-        setState(() {
-          _device = onValue[0];
-        });
-        await showDialog(
-            context: context,
-            builder: (_) => Padding(
-              padding: EdgeInsets.fromLTRB(0, 200, 0, 200),
-              child: Container(
-                height: 100,
-                width: 100,
-                color: Colors.red,
-                child: (_device == null) ? 
-                  CircularProgressIndicator() 
-                  : EKGVisual(
-                    key: _ekg,
-                    device: _device
-                  ),
-              ),
-            )
-          ).then((value) {
-            _writeWav();
-          });
-      }
-    });
   }
 
   @override
@@ -143,8 +179,17 @@ class _HomeState extends State<Home> {
                     child: FlatButton(
                       child: Text('Record'),
                       onPressed: () async {
-                        _getCurrentDevices();
-                      },
+                        final BluetoothDevice selectedDevice = await Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) { return SelectBondedDevicePage(checkAvailability: false); })
+                        );
+                        if (selectedDevice != null) {
+                          print('Connect -> selected ' + selectedDevice.address);
+                          _startReading(selectedDevice);
+                        }
+                        else {
+                          print('Connect -> no device selected');
+                        }
+                      }
                     )
                   ),
                   Container(
@@ -160,11 +205,7 @@ class _HomeState extends State<Home> {
                           Future<Uint8List> test = value.readAsBytes();
                           test.then((nextValue) {
                             String newStuff = nextValue.toString();
-                            print(test);
                           });
-                          print(test);
-                          _ekg.currentState.stream = null;
-                          _ekg.currentState.dispose();
                         });
                       },
                     )
@@ -178,8 +219,8 @@ class _HomeState extends State<Home> {
           (_admin) ? Container(
             color: Colors.blue,
             child: Text(_carouselPage.toString()),
-          ) : DevicesDialog(),
-          DevicesDialog()
+          ) : SelectBondedDevicePage(),
+          //DevicesDialog()
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

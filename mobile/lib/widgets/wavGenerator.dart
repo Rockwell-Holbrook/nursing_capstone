@@ -22,12 +22,12 @@ class WavGenerator {
 
   //All headers and info needed to make the .wav
   String filename;
-  List<int> bits; 
+  List<int> bits;
   int numSeconds;
   int sampleCount;
   final int _frequency = 44100;
-  final int _bitRate = 32;
-  final _numChannels = 1; 
+  final int _bitRate = 16;
+  final _numChannels = 1;
   int _dataChunkSizeIndex = 0;
   List<int> _outputBytes = <int>[];
   final Utf8Encoder _utf8encoder = Utf8Encoder(); 
