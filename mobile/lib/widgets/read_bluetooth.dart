@@ -1,6 +1,8 @@
 import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+import 'dart:core';
 
 class ReadBluetooth {
 
@@ -36,36 +38,69 @@ class ReadBluetooth {
   }
 
   void _onDataReceived(dynamic data) {
-    int backspacesCounter = 0;
-    data.forEach((byte) {
-      if (byte == 8 || byte == 127) {
-        backspacesCounter++;
-      }
-    });
-    Uint8List buffer = Uint8List(data.length - backspacesCounter);
-    int bufferIndex = buffer.length;
+    //ByteData.view(data.buffer);
 
-    // Apply backspace control character
-    backspacesCounter = 0;
-    for (int i = data.length - 1; i >= 0; i--) {
-      if (data[i] == 8 || data[i] == 127) {
-        backspacesCounter++;
-      }
-      else {
-        if (backspacesCounter > 0) {
-          backspacesCounter--;
-        }
-        else {
-          buffer[--bufferIndex] = data[i];
-        }
-      }
-    }
+    // List<int> list = new List.from(data);
+    // callback(list);
 
-    // Create message if there is new line character
-    String dataString = String.fromCharCodes(buffer);
-    if (dataString == '') {
-      dataString = '-257099457.0';
+  // if (data.length > 0) {
+  //   String dataString = String.fromCharCodes(data);
+  //   callback(double.tryParse(dataString));
+  // }
+  //   for(int i = 0; i < data.length; i++) {
+  //     callback(data[i]);
+  //   }
+  // }
+    if(data != null) {
+      // if(data.length < 32 && data.length > 1) {
+      //   Uint8List sizedList = new Uint8List(32);
+      //   for(int i = (32-data.length); i < 32; i++) {
+      //     int j = i - (32-data.length);
+      //     sizedList[i] = data[j];
+      //   }
+      //   List<int> list = new List.from(sizedList);
+      //   callback(list);
+      // } else {
+        List<int> list = new List.from(data);
+        callback(list);
+      // }
+    } else {
+      print('empty packet');
     }
-    callback(double.tryParse(dataString));
   }
 }
+
+// void _onDataReceived(dynamic data) {
+//     int backspacesCounter = 0;
+//     data.forEach((byte) {
+//       if (byte == 8 || byte == 127) {
+//         backspacesCounter++;
+//       }
+//     });
+//     Uint8List buffer = Uint8List(data.length - backspacesCounter);
+//     int bufferIndex = buffer.length;
+
+//     // Apply backspace control character
+//     backspacesCounter = 0;
+//     for (int i = data.length - 1; i >= 0; i--) {
+//       if (data[i] == 8 || data[i] == 127) {
+//         backspacesCounter++;
+//       }
+//       else {
+//         if (backspacesCounter > 0) {
+//           backspacesCounter--;
+//         }
+//         else {
+//           buffer[--bufferIndex] = data[i];
+//         }
+//       }
+//     }
+
+//     // Create message if there is new line character
+//     String dataString = String.fromCharCodes(buffer);
+//     if (dataString == '') {
+//       dataString = '-257099457.0';
+//     }
+//     callback(int.parse(dataString));
+//   }
+// }

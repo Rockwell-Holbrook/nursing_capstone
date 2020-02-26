@@ -71,25 +71,25 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.2"
-  fixnum:
+  file:
     dependency: transitive
     description:
-      name: fixnum
+      name: file
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.10.11"
+    version: "5.1.0"
   flutter:
     dependency: "direct main"
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_blue:
+  flutter_audio_recorder:
     dependency: "direct main"
     description:
-      name: flutter_blue
+      name: flutter_audio_recorder
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.2"
+    version: "0.5.5"
   flutter_bluetooth_serial:
     dependency: "direct main"
     description:
@@ -123,6 +123,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.4"
+  intl:
+    dependency: transitive
+    description:
+      name: intl
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.16.1"
   matcher:
     dependency: transitive
     description:
@@ -179,13 +186,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.2.1"
-  protobuf:
-    dependency: transitive
-    description:
-      name: protobuf
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.14.4"
   quiver:
     dependency: transitive
     description:
@@ -193,13 +193,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.5"
-  rxdart:
-    dependency: transitive
-    description:
-      name: rxdart
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.22.6"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -269,5 +262,5 @@ packages:
     source: hosted
     version: "3.5.0"
 sdks:
-  dart: ">=2.4.0 <3.0.0"
+  dart: ">=2.5.0 <3.0.0"
   flutter: ">=1.10.0 <2.0.0"

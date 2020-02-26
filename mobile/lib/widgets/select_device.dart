@@ -101,6 +101,18 @@ class _SelectBondedDevicePage extends State<SelectBondedDevicePage> {
         Navigator.of(context).pop(_device.device);
       },
     )).toList();
+    BluetoothDevice wire = new BluetoothDevice(
+      name: 'wire',
+      isConnected: true,
+      address: "00:00:00:00:00:00",
+      bondState: BluetoothBondState.unknown
+    );
+    BluetoothDeviceListEntry entry = new BluetoothDeviceListEntry(
+      device: wire,
+      onTap: () {
+        Navigator.of(context).pop(wire);
+      },
+    );
     return Scaffold(
       appBar: AppBar(
         title: Text('Select device'),
@@ -119,7 +131,9 @@ class _SelectBondedDevicePage extends State<SelectBondedDevicePage> {
           )
         ],
       ),
-      body: ListView(children: list)
+      body: ListView(
+        children: list + [entry]
+      )
     );
   }
 }
