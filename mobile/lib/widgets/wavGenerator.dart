@@ -59,20 +59,6 @@ class WavGenerator {
     return files;
   }
 
-  ///Get the audio block requested and return the file
-  Future<int> playAudio() async {
-    try { 
-      final file = await localFile;
-      // Read the file
-      int contents = (await file.readAsBytes()) as int;
-
-      return contents;
-    } catch (e) {
-      // If encountering an error, return 0
-      return 0;
-    }
-  }
-
   void _initializeWave() {
     // _outputBytes.addAll(_utf8encoder.convert('RIFF'));
     // _outputBytes.addAll(ByteUtils.numberAsByteList((bits.length * 4) + 36, 4, bigEndian: false));//0
