@@ -8,6 +8,8 @@ import 'package:mobile/widgets/recording.dart';
 import 'package:mobile/widgets/read_bluetooth.dart';
 import 'package:mobile/widgets/wavGenerator.dart';
 import 'package:oscilloscope/oscilloscope.dart';
+import 'package:mobile/widgets/recording_tile.dart';
+import 'package:mobile/widgets/filter.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 
 class Home extends StatefulWidget {
@@ -166,12 +168,16 @@ class _HomeState extends State<Home> {
     }
   }
 
-  @override
+@override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Beats Stethoscope'),
       ),
+      drawer: (_pageNumber == 1) ?  Filter(
+          callback: (){},
+          submit:(){}
+      ) : Container(),
       body: IndexedStack(
         index: _pageNumber,
         children: <Widget>[
