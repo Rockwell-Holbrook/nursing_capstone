@@ -11,6 +11,14 @@ class Filter extends StatefulWidget {
       new _FilterState();
 }
 class _FilterState extends State<Filter> {
+  bool _dateState = false;
+  bool _abnormalState = false;
+  bool _practitionerState = false;
+
+  void _dateStateChanged(bool value) => setState(() => _dateState = value);
+  void _abnormalStateChanged(bool value) => setState(() => _abnormalState = value);
+  void _practitionerStateChanged(bool value) => setState(() => _practitionerState = value);
+
   @override
   Widget build(BuildContext context) {
     return Drawer (
@@ -18,15 +26,15 @@ class _FilterState extends State<Filter> {
         children: <Widget>[
           ListTile(
               title: Text("Date"),
-              trailing: Icon(Icons.check_box)
+              trailing: new Checkbox(value: _dateState, onChanged: _dateStateChanged)
           ),
           ListTile(
               title: Text("Abnormal"),
-              trailing: Icon(Icons.check_box)
+              trailing: new Checkbox(value: _abnormalState, onChanged: _abnormalStateChanged)
           ),
           ListTile(
               title: Text("Practitioner"),
-              trailing: Icon(Icons.check_box)
+              trailing: new Checkbox(value: _practitionerState, onChanged: _practitionerStateChanged)
           )
         ],
       ),

@@ -239,11 +239,11 @@ class _HomeState extends State<Home> {
             ],
           ),
 
-          (_admin) ? Container(
-            color: Colors.blue,
-            child: Text(_carouselPage.toString()),
-          ) : SelectBondedDevicePage(),
-          //DevicesDialog()
+          //index two
+          (_admin) ? RecordingTile(
+              callback: (){},
+              submit:(){}
+          ) : Container()
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
