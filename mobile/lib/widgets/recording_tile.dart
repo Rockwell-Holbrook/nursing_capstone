@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import './tag_recording.dart';
+import '../data/networkRepo.dart';
 
 class RecordingTile extends StatefulWidget {
   final Function callback;
@@ -13,26 +14,18 @@ class RecordingTile extends StatefulWidget {
       new _RecordingsState();
 }
 class _RecordingsState extends State<RecordingTile> {
-  List<dynamic> items = [
-    {
-      "id": "1111",
-      "date": "01-01-1111",
-      "recorder": "JoeAnn Meyers",
-      "abnormal": "true"
-    },
-    {
-      "id": "2222",
-      "date": "02-02-2222",
-      "recorder": "JoeAnn Meyers",
-      "abnormal": "false"
-    },
-    {
-      "id": "3333",
-      "date": "03-03-3333",
-      "recorder": "Billy Joe",
-      "abnormal": "true"
-    }
-  ];
+
+  List<dynamic> items = [];
+
+  void initState() {
+    super.initState();
+    Future<List<dynamic>> holder = getPatients();
+    holder.then((value) {
+      setState(() {
+        items.addAll(value);
+      });
+    });
+  }
 
   void _onEntryPressed(String id, String date, String recorder, String abnormal) async {
     Navigator.of(context).push(
