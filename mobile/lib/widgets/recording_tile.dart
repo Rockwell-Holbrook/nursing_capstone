@@ -31,6 +31,14 @@ class _RecordingsState extends State<RecordingTile> {
       "abnormal": "true"
     }
   ];
+
+  void _onEntryPressed(String id, String date, String recorder, String abnormal) async {
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) {
+          return TagRecording(id, date, recorder, abnormal);
+        })
+  }
+
   //widget.callback
   @override
   Widget build(BuildContext context) {
@@ -73,21 +81,24 @@ class _RecordingsState extends State<RecordingTile> {
                     ListView.builder(
                         itemBuilder: (context, index) {
                           //Do Stuff Here
-                          return new Row(
-                            children: <Widget>[
-                              Expanded(
-                                  child: Text( items[index]['id'] )
-                              ),
-                              Expanded(
-                                  child: Text( items[index]['date'] )
-                              ),
-                              Expanded(
-                                  child: Text( items[index]['recorder'] )
-                              ),
-                              Expanded(
-                                  child: Text( items[index]['abnormal'] )
+                          return new FlatButton(
+                              onPressed: () => _onEntryPressed(items[index]['id'], items[index]['date'], items[index]['recorder'], items[index]['abnormal']),
+                              child: Row(
+                                children: <Widget>[
+                                  Expanded(
+                                      child: Text( items[index]['id'] )
+                                  ),
+                                  Expanded(
+                                      child: Text( items[index]['date'] )
+                                  ),
+                                  Expanded(
+                                      child: Text( items[index]['recorder'] )
+                                  ),
+                                  Expanded(
+                                      child: Text( items[index]['abnormal'] )
+                                  )
+                                ],
                               )
-                            ],
                           );
                         }
                     )
