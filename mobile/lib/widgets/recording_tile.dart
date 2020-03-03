@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-class Recordings extends StatefulWidget {
+class RecordingTile extends StatefulWidget {
   final Function callback;
   final Function submit;
-  Recordings({
+  RecordingTile({
     @required this.callback,
     @required this.submit
   });
@@ -10,7 +10,7 @@ class Recordings extends StatefulWidget {
   _RecordingsState createState() =>
       new _RecordingsState();
 }
-class _RecordingsState extends State<Recordings> {
+class _RecordingsState extends State<RecordingTile> {
   List<dynamic> items = [
     {
       "id": "1111",
