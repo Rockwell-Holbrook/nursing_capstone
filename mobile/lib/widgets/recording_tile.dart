@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import './tag_recording.dart';
+
 class RecordingTile extends StatefulWidget {
   final Function callback;
   final Function submit;
@@ -35,8 +37,9 @@ class _RecordingsState extends State<RecordingTile> {
   void _onEntryPressed(String id, String date, String recorder, String abnormal) async {
     Navigator.of(context).push(
         MaterialPageRoute(builder: (context) {
-          return TagRecording(id, date, recorder, abnormal);
+          return TagRecording(id: id, date: date, name: recorder, abnormal: date);
         })
+    );
   }
 
   //widget.callback
