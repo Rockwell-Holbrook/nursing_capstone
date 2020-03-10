@@ -38,8 +38,6 @@ class _RecordingsState extends State<RecordingTile> {
   //widget.callback
   @override
   Widget build(BuildContext context) {
-    var _pageController;
-    var currentPage;
     return Container(
       child: SizedBox(
         width: (MediaQuery.of(context).size.width * 0.85),
