@@ -28,3 +28,31 @@ createPatient() async {
   }
   return response;
 }
+
+Future<List<dynamic>> getPatients() async {
+  return Future(() {
+    List<dynamic> items =
+      [
+        {
+          "id": "1111",
+          "date": "01-01-1111",
+          "recorder": "JoeAnn Meyers",
+          "abnormal": "true"
+        },
+        {
+          "id": "2222",
+          "date": "02-02-2222",
+          "recorder": "JoeAnn Meyers",
+          "abnormal": "false"
+        },
+        {
+          "id": "3333",
+          "date": "03-03-3333",
+          "recorder": "Billy Joe",
+          "abnormal": "true"
+        }
+      ];
+
+    return items;
+    });
+  }
