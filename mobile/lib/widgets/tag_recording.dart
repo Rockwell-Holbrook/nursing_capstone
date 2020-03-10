@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../mixins/audio_player.dart';
 
 class TagRecording extends StatefulWidget {
 
@@ -18,7 +19,8 @@ class TagRecording extends StatefulWidget {
   _TagRecordingState createState() => new _TagRecordingState();
 }
 
-class _TagRecordingState extends State<TagRecording> {
+class _TagRecordingState extends State<TagRecording> 
+  with AudioPlayerController{
 
   List<bool> tags = [];
 
@@ -44,45 +46,153 @@ class _TagRecordingState extends State<TagRecording> {
       appBar: AppBar(
         title: Text('Review Records for case: ' + widget.id),
       ),
-      body: Column(
-        children: <Widget> [
-          Text('Date Taken: ' + widget.date),
-          Text('Name of Recorder: ' + widget.name),
-          Text('Recording Status: ' + widget.abnormal),
-          CheckBoxQuery(
-              query: Text('ded'),
-              onPressed: (value) {
-                setState(() {
-                  tags[0] = value;
-                });
-              }
-            ),
-            CheckBoxQuery(
-              query: Text('gonna be ded'),
-              onPressed: (value) {
-                setState(() {
-                  tags[1] = value;
-                });
-              }
-            ),
-            CheckBoxQuery(
-              query: Text('not ded'),
-              onPressed: (value) {
-                setState(() {
-                  tags[2] = value;
-                });
-              }
-            ),
-            CheckBoxQuery(
-              query: Text('healthy'),
-              onPressed: (value) {
-                setState(() {
-                  tags[3] = value;
-                });
-              }
-            ),
-        ]
-      ),
+      body:
+        Padding(
+          padding: EdgeInsets.all(30),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget> [
+              Text('Date Taken: ' + widget.date),
+              Text('Name of Recorder: ' + widget.name),
+              Text('Recording Status: ' + widget.abnormal),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children:<Widget> [
+                    CheckBoxQuery(
+                    query: Text('ded'),
+                    onPressed: (value) {
+                      setState(() {
+                        tags[0] = value;
+                      });
+                    }
+                  ),
+                  CheckBoxQuery(
+                    query: Text('gonna be ded'),
+                    onPressed: (value) {
+                      setState(() {
+                        tags[1] = value;
+                      });
+                    }
+                  ),
+                ]
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children:<Widget> [
+                    CheckBoxQuery(
+                    query: Text('ded'),
+                    onPressed: (value) {
+                      setState(() {
+                        tags[0] = value;
+                      });
+                    }
+                  ),
+                  CheckBoxQuery(
+                    query: Text('gonna be ded'),
+                    onPressed: (value) {
+                      setState(() {
+                        tags[1] = value;
+                      });
+                    }
+                  ),
+                ]
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children:<Widget> [
+                    CheckBoxQuery(
+                    query: Text('ded'),
+                    onPressed: (value) {
+                      setState(() {
+                        tags[0] = value;
+                      });
+                    }
+                  ),
+                  CheckBoxQuery(
+                    query: Text('gonna be ded'),
+                    onPressed: (value) {
+                      setState(() {
+                        tags[1] = value;
+                      });
+                    }
+                  ),
+                ]
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children:<Widget> [
+                    CheckBoxQuery(
+                    query: Text('ded'),
+                    onPressed: (value) {
+                      setState(() {
+                        tags[0] = value;
+                      });
+                    }
+                  ),
+                  CheckBoxQuery(
+                    query: Text('gonna be ded'),
+                    onPressed: (value) {
+                      setState(() {
+                        tags[1] = value;
+                      });
+                    }
+                  ),
+                ]
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children:<Widget> [
+                    CheckBoxQuery(
+                    query: Text('ded'),
+                    onPressed: (value) {
+                      setState(() {
+                        tags[0] = value;
+                      });
+                    }
+                  ),
+                  CheckBoxQuery(
+                    query: Text('gonna be ded'),
+                    onPressed: (value) {
+                      setState(() {
+                        tags[1] = value;
+                      });
+                    }
+                  ),
+                ]
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children:<Widget>[
+                  FlatButton(
+                    onPressed: () => pauseAudio(),
+                    child: Icon(Icons.pause)
+                  ),
+                  FlatButton(
+                    onPressed: () => playLocalAudio('soundFileSample0.wav'),
+                    child: Text('Play test')
+                  ),
+                  FlatButton(
+                    onPressed: () => resumeAudio(),
+                    child: Icon(Icons.play_arrow)
+                  )
+                ]
+              ),
+              Padding(
+                padding: EdgeInsets.all(30),
+                child: FlatButton(
+                  onPressed: () => {},
+                  child: Container(
+                    height: 50,
+                    width: 124,
+                    color: Colors.blue,
+                    child: Text('Submit Diagnosis', style: TextStyle(color: Colors.white),)
+                  ),
+                ),
+              )
+            ]
+          ),
+        )
     );
   }
 }
