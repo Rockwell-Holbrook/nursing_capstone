@@ -107,6 +107,7 @@ class WavGenerator {
 //     final file = await localFile;
 //     return file.writeAsBytes(_outputBytes);
     final file = await localFile;
+    file.
     // int length = ((bits.length - 1) * 32) + 1;
     // Uint8List allData = new Uint8List(length);
     // allData[0] = bits[0][0];
