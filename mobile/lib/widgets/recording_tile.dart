@@ -19,12 +19,12 @@ class _RecordingsState extends State<RecordingTile> {
 
   void initState() {
     super.initState();
-    Future<List<dynamic>> holder = getPatients();
-    holder.then((value) {
-      setState(() {
-        items.addAll(value);
-      });
-    });
+    // Future<List<dynamic>> holder = getPatients();
+    // holder.then((value) {
+    //   setState(() {
+    //     items.addAll(value);
+    //   });
+    // });
   }
 
   void _onEntryPressed(String id, String date, String recorder, String abnormal) async {
@@ -70,9 +70,10 @@ class _RecordingsState extends State<RecordingTile> {
                       )
                   ),
                   SizedBox(
-                    height: (MediaQuery.of(context).size.height * 0.50),
+                    height: (MediaQuery.of(context).size.height * 0.9),
                     child:
                     ListView.builder(
+                        itemCount: items.length,
                         itemBuilder: (context, index) {
                           //Do Stuff Here
                           return new FlatButton(

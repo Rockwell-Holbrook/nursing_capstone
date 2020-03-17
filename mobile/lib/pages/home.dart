@@ -11,6 +11,7 @@ import 'package:oscilloscope/oscilloscope.dart';
 import 'package:mobile/widgets/recording_tile.dart';
 import 'package:mobile/widgets/filter.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+import 'package:mobile/widgets/ExistingRecordingList.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -243,7 +244,8 @@ class _HomeState extends State<Home> {
           (_admin) ? RecordingTile(
               callback: (){},
               submit:(){}
-          ) : Container()
+          ) : Container(),
+          ExistingRecordingList()
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import './existing_recording.dart';
+import 'existing_recording_tile.dart';
 
 class ExistingRecordingList extends StatefulWidget {
-  final Function callback;
-  final Function submit;
-  ExistingRecordingList({
-    @required this.callback,
-    @required this.submit
-  });
+  // final Function callback;
+  // final Function submit;
+  // ExistingRecordingList({
+  //   @required this.callback,
+  //   @required this.submit
+  // });
   @override
   _ExistingRecordingsState createState() =>
       new _ExistingRecordingsState();
@@ -36,13 +36,13 @@ class _ExistingRecordingsState extends State<ExistingRecordingList> {
   Widget build(BuildContext context) {
     return Container(
         child: SizedBox(
-                  height: (MediaQuery.of(context).size.height * 0.50),
-                  child:
-                  ListView.builder(
-                      itemBuilder: (context, index) {
-                        return ExistingRecordingTile(files[index].uri().toString())
-                      }
-                  )
+          height: (MediaQuery.of(context).size.height * 0.50),
+          child: ListView.builder(
+            itemCount: files.length,
+            itemBuilder: (context, index) {
+              return ExistingRecordingTile(timeStamp: files[index]);
+            }
+          )
         )
     );
   }
