@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:mobile/data/networkRepo.dart';
 import 'dart:io';
 import 'package:mobile/widgets/carousel_dots.dart';
 import 'package:mobile/widgets/select_device.dart';
@@ -12,6 +13,7 @@ import 'package:mobile/widgets/recording_tile.dart';
 import 'package:mobile/widgets/filter.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:mobile/widgets/ExistingRecordingList.dart';
+import '../data/user.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -34,11 +36,17 @@ class _HomeState extends State<Home> {
 
   GlobalKey<CarouselDotsState> _keyChild = GlobalKey();
 
+  bool _currentlyRecording;
+  String _patientId;
+
   void initState() {
     super.initState();
     _admin = true;
     _pageNumber = 0;
     _carouselPage = 0;
+
+    _currentlyRecording = false;
+    _patientId = '';
 
     FlutterBluetoothSerial.instance.state.then((state) {
       setState(() { _bluetoothState = state; });
@@ -80,12 +88,12 @@ class _HomeState extends State<Home> {
       title: new Text('New Recording')
     ),
     BottomNavigationBarItem(
-      icon: Icon(Icons.refresh,color: Color.fromARGB(255, 0, 0, 0)),
-      title: new Text('Review Recordings')
+      icon: Icon(Icons.flag,color: Color.fromARGB(255, 0, 0, 0)),
+      title: new Text('Admin Review')
     ),
     BottomNavigationBarItem(
-      icon: Icon(Icons.bluetooth_audio,color: Color.fromARGB(255, 0, 0, 0)),
-      title: new Text('Test Bluetooth Connection')
+      icon: Icon(Icons.update, color: Color.fromARGB(255, 0, 0, 0)),
+      title: new Text('Review/Submit')
     )
   ];
 
@@ -165,7 +173,7 @@ class _HomeState extends State<Home> {
     //   bytes.add(audio[i].toInt());
     // }
     if (audio != null) {
-      WavGenerator wav = new WavGenerator("soundFileSample$_carouselPage", audio);
+      WavGenerator wav = new WavGenerator("$_patientId/soundFileSample$_carouselPage", audio);
     }
   }
 
@@ -182,7 +190,8 @@ class _HomeState extends State<Home> {
       body: IndexedStack(
         index: _pageNumber,
         children: <Widget>[
-          Column(
+          (_currentlyRecording)
+          ? Column(
             children: <Widget>[
               Carousel(
                 callback: (index) {
@@ -191,7 +200,13 @@ class _HomeState extends State<Home> {
                   });
                   _keyChild.currentState.changeDots(index);
                 },
-                submit: () {print('submit');},
+                submit: () {
+                  print('submit');
+                  setState(() {
+                    _patientId = '';
+                    _currentlyRecording = false;
+                  });
+                },
               ),
               CarouselDots(_keyChild),
               Row(
@@ -238,8 +253,30 @@ class _HomeState extends State<Home> {
               ), 
               //BeatsForm(),
             ],
+          )
+          : Container(
+            child: FlatButton(
+              child: Center(
+                child: Container(
+                  height: 50,
+                  width: 150,
+                  color: Colors.blue,
+                  child: Center(
+                    child: Text('Create New Patient', style: TextStyle(color: Colors.white),)
+                  )
+                )
+              ),
+              onPressed: () async {
+                // User user = new User();
+                // await user.init();
+                String holderId = await new_patient('test@test.com');//user.username
+                setState(() {
+                  _patientId = holderId;
+                  _currentlyRecording = true;
+                });
+              },
+            ),
           ),
-
           //index two
           (_admin) ? RecordingTile(
               callback: (){},
