@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'existing_recording_tile.dart';
 import '../data/localFileSystem.dart';
+import '../data/networkRepo.dart';
 
 class ExistingRecordingList extends StatefulWidget {
   // final Function callback;
@@ -28,6 +29,16 @@ class _ExistingRecordingsState extends State<ExistingRecordingList> {
       List<File> files = await getfilesInDirectory(directories[i]);
       filessystem[directories[i]] = files;
     }
+  }
+
+  submitFiles() {
+    filessystem.forEach((key, value) {
+      if(value.length == 5) {
+        for(var file in value) {
+          upload_file("test@test.com", key, file);
+        }
+      }
+    });
   }
 
   void initState() {
