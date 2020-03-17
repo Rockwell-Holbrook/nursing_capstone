@@ -1,5 +1,9 @@
+import 'dart:collection';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'existing_recording_tile.dart';
+import '../data/localFileSystem.dart';
 
 class ExistingRecordingList extends StatefulWidget {
   // final Function callback;
@@ -14,17 +18,16 @@ class ExistingRecordingList extends StatefulWidget {
 }
 class _ExistingRecordingsState extends State<ExistingRecordingList> {
 
-  List<dynamic> files = [];
+  List<String> directories = [];
+  Map<String, List<File>> filessystem = new HashMap();
 
-  generateFilesFromLocalStorage() {
-    files = [
-      '01-15-2020',
-      '01-16-2020',
-      '01-17-2020',
-      '01-18-2020',
-      '01-19-2020',
-      '01-20-2020',
-    ];
+  generateFilesFromLocalStorage() async {
+    directories = await localDirectories;
+    setState(() {});
+    for(int i = 0; i < directories.length; i++) {
+      List<File> files = await getfilesInDirectory(directories[i]);
+      filessystem[directories[i]] = files;
+    }
   }
 
   void initState() {
@@ -38,9 +41,9 @@ class _ExistingRecordingsState extends State<ExistingRecordingList> {
         child: SizedBox(
           height: (MediaQuery.of(context).size.height * 0.50),
           child: ListView.builder(
-            itemCount: files.length,
+            itemCount: directories.length,
             itemBuilder: (context, index) {
-              return ExistingRecordingTile(timeStamp: files[index]);
+              return ExistingRecordingTile(timeStamp: directories[index]);
             }
           )
         )
