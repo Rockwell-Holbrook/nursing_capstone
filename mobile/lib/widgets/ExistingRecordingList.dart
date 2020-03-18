@@ -7,42 +7,55 @@ import '../data/localFileSystem.dart';
 import '../data/networkRepo.dart';
 
 class ExistingRecordingList extends StatefulWidget {
-  // final Function callback;
-  // final Function submit;
-  // ExistingRecordingList({
-  //   @required this.callback,
-  //   @required this.submit
-  // });
-  @override
-  _ExistingRecordingsState createState() =>
-      new _ExistingRecordingsState();
-}
-class _ExistingRecordingsState extends State<ExistingRecordingList> {
 
-  List<String> directories = [];
+  ExistingRecordingList({
+    Key key
+  }): super(key: key);
+
+  @override
+  ExistingRecordingsState createState() => new ExistingRecordingsState();
+}
+class ExistingRecordingsState extends State<ExistingRecordingList> {
+
+  List<String> directories;
   Map<String, List<File>> filessystem = new HashMap();
 
+  void initState() {
+    super.initState();
+    directories = [];
+    generateFilesFromLocalStorage();
+  }
+
+
   generateFilesFromLocalStorage() async {
-    directories = await localDirectories;
-    setState(() {});
-    for(int i = 0; i < directories.length; i++) {
-      List<File> files = await getfilesInDirectory(directories[i]);
-      filessystem[directories[i]] = files;
-    }
+    List<String> drsHolder = [];
+    Future<List<String>> drs = localDirectories;
+    drs.then((values) {
+      drsHolder.addAll(values);
+      for(int i = 0; i < drsHolder.length; i++) {
+        Future<List<File>> files = getfilesInDirectory(drsHolder[i]);
+        files.then((value) {
+          if(value.length > 0) {
+            filessystem[drsHolder[i]] = value;
+            setState(() {
+              directories.add(drsHolder[i].substring(drsHolder[i].lastIndexOf('/') + 1));
+            });
+          }
+        });
+      }
+    });
   }
 
   submitFiles() {
     filessystem.forEach((key, value) {
       if(value.length == 5) {
         for(var file in value) {
-          upload_file("test@test.com", key, file);
+          String name = file.path.substring(file.path.lastIndexOf('/') + 1);
+          upload_file(name.substring(0, name.indexOf('.')), "test@test.com", key.substring(key.lastIndexOf('/') + 1), file);
         }
+        deleteDirectory(key);
       }
     });
-  }
-
-  void initState() {
-    super.initState();
     generateFilesFromLocalStorage();
   }
 
@@ -50,12 +63,30 @@ class _ExistingRecordingsState extends State<ExistingRecordingList> {
   Widget build(BuildContext context) {
     return Container(
         child: SizedBox(
-          height: (MediaQuery.of(context).size.height * 0.50),
-          child: ListView.builder(
-            itemCount: directories.length,
-            itemBuilder: (context, index) {
-              return ExistingRecordingTile(timeStamp: directories[index]);
-            }
+          height: (MediaQuery.of(context).size.height * 0.90),
+          child: Column(
+            children: <Widget> [
+              Container(
+                height: 75,
+                width: 150,
+                margin: EdgeInsets.all(10),
+                color: Colors.blue,
+                child: FlatButton(
+                  child: Text('Have Wifi?\nSubmit All', style: TextStyle(color: Colors.white)),
+                  onPressed: () {
+                    submitFiles();
+                  },
+                )
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: directories.length,
+                  itemBuilder: (context, index) {
+                    return ExistingRecordingTile(timeStamp: directories[index]);
+                  }
+                )
+              )
+            ]
           )
         )
     );

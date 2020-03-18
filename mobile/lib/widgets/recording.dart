@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:io';
 import 'package:file/local.dart';
@@ -7,13 +6,15 @@ import 'package:path_provider/path_provider.dart';
 
 class RecordingMic {
 
-  RecordingMic(String filename) {
+  RecordingMic(String filename, String patientId) {
     this.filename = filename;
+    this.patientId = patientId;
     writeAudio();
   }
 
   String filename;
   String path;
+  String patientId;
 
   
   ///Get the current directory
@@ -27,22 +28,45 @@ class RecordingMic {
     path = await _localPath;
   }
 
+  ///Create the new directory, if it does not already exist
+  Future<bool> createDirectory() async {
+    if(await Directory('$path/$patientId').exists()) {
+      return true;
+    } else {
+      Completer<bool> completer = new Completer();
+      new Directory('$path/$patientId').create(recursive: true)
+      // The created directory is returned as a Future.
+      .then((Directory directory) {
+        print(directory.path);
+        completer.complete(true);
+      });
+      return completer.future;
+    }
+  }
+
   void writeAudio() async {
     bool hasPermission = await FlutterAudioRecorder.hasPermissions;
     await localFile();
-    var recorder = FlutterAudioRecorder("$path/$filename.wav", audioFormat: AudioFormat.WAV, sampleRate: 44100); // or AudioFormat.WAV
-    await recorder.initialized;
-    var ready = recorder.current(channel: 0);
-    ready.then((value) async {
-      print(value);
-      await recorder.start();
-      var recording = await recorder.current(channel: 0);
+    Future<bool> directoryExists = createDirectory();
+    directoryExists.then((value) async {
+      if(value) {
+        var recorder = FlutterAudioRecorder("$path/$patientId/$filename.wav", audioFormat: AudioFormat.WAV, sampleRate: 44100); // or AudioFormat.WAV
+        await recorder.initialized;
+        var ready = recorder.current(channel: 0);
+        ready.then((value) async {
+          print(value);
+          await recorder.start();
+          var recording = await recorder.current(channel: 0);
 
-      await new Future.delayed(const Duration(seconds : 10));
+          await new Future.delayed(const Duration(seconds : 10));
 
-      var result = await recorder.stop();
-      LocalFileSystem localFileSystem = new LocalFileSystem(); 
-      File file = localFileSystem.file(result.path);
+          var result = await recorder.stop();
+          LocalFileSystem localFileSystem = new LocalFileSystem(); 
+          File file = localFileSystem.file(result.path);
+        });
+      } else {
+        print('error accessing directory');
+      }
     });
   }
 }

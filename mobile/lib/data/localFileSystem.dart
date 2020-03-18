@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
@@ -18,22 +19,36 @@ import 'dart:io';
     List<String> paths = [];
     final path = await _localPath;
     var directory = Directory('$path');
+    Completer<List<String>> completer = new Completer();
     directory.list(recursive: false, followLinks: false)
       .listen((FileSystemEntity entity) {
         paths.add(entity.path);
-      });
-    return paths;
+      },
+      onDone: () => completer.complete(paths));
+    return completer.future;
   }
   
   ///Get a future of all files within the directory provided
-  Future<List<File>> getfilesInDirectory (String dr) async {
+  Future<List<File>> getfilesInDirectory(String dr) async {
     List<File> files = [];
-    final path = await _localPath;
-    var directory = Directory('$path/$dr');
+    var directory = Directory('$dr');
+    Completer<List<File>> completer = new Completer();
     directory.list(recursive: false, followLinks: false)
       .listen((FileSystemEntity entity) {
         files.add(File(entity.path));
-      });
-    return files;
+      },
+      onDone: () => completer.complete(files));
+    return completer.future;
   }
 
+  ///Deletes a directory
+  bool deleteDirectory(String dr) {
+    try{
+      // Directory directory = Directory(dr);
+      // directory.deleteSync(recursive: true);
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }

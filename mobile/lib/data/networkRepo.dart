@@ -19,17 +19,20 @@ Future<String> new_patient(String user) async
 }
 
 //Writes one file for a patient to the db under the user's credentials
-void upload_file(String user, String patient_id, File file) async //user is an email
+void upload_file(String location, String user, String patient_id, File file) async //user is an email
 {
   var url = "https://api.byu-dept-nursingsteth-dev.amazon.byu.edu/beats/patients/"+patient_id+"/recordings";
 
-  var body = {"created_by": user };
+  var body = {"location": location,
+              "created_by": user};
 
   Response file_url = await post(url, body: JsonEncoder().convert(body));
 
   final response_body = json.decode(file_url.body);
 
   var request = await put(response_body["url"], body: file.readAsBytesSync());
+
+  print(request);
 
 }
 

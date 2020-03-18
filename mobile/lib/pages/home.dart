@@ -35,6 +35,7 @@ class _HomeState extends State<Home> {
   List<int> audio = [];
 
   GlobalKey<CarouselDotsState> _keyChild = GlobalKey();
+  GlobalKey<ExistingRecordingsState> _recordinList = GlobalKey();
 
   bool _currentlyRecording;
   String _patientId;
@@ -112,11 +113,27 @@ class _HomeState extends State<Home> {
   void _startReading(BluetoothDevice server) {
     if(server.name == 'wire') {
       print('wire)');
-      RecordingMic mic = new RecordingMic('soundFileSample$_carouselPage');
+      RecordingMic mic = new RecordingMic('$_carouselPage', _patientId);
       showDialog(
         context: context,
-        builder: (_) {
-          CircularProgressIndicator();
+        builder: (BuildContext context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.0),
+            ),
+            child: Container(
+              height: 200,
+              width: 250,
+              color: Colors.white,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  CircularProgressIndicator(),
+                ]
+              )
+            )
+          );
         }
       );
       return;
@@ -206,6 +223,7 @@ class _HomeState extends State<Home> {
                     _patientId = '';
                     _currentlyRecording = false;
                   });
+                  _recordinList.currentState.generateFilesFromLocalStorage();
                 },
               ),
               CarouselDots(_keyChild),
@@ -282,7 +300,9 @@ class _HomeState extends State<Home> {
               callback: (){},
               submit:(){}
           ) : Container(),
-          ExistingRecordingList()
+          ExistingRecordingList(
+            key: _recordinList,
+          )
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
