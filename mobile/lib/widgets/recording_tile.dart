@@ -16,21 +16,24 @@ class RecordingTile extends StatefulWidget {
 class _RecordingsState extends State<RecordingTile> {
 
   List<dynamic> items = [];
+  String nextToken;
 
   void initState() {
     super.initState();
-    // Future<List<dynamic>> holder = getPatients();
-    // holder.then((value) {
-    //   setState(() {
-    //     items.addAll(value);
-    //   });
-    // });
+    nextToken = '';
+    Future<List<dynamic>> holder = all_patients(nextToken);
+    holder.then((value) {
+      setState(() {
+        items.addAll(value);
+        print(items.toString()); 
+      });
+    });
   }
 
-  void _onEntryPressed(String id, String date, String recorder, String abnormal) async {
+  void _onEntryPressed(String id, String dateModified, String createdBy, List<String> tags, String abnormal) async {
     Navigator.of(context).push(
         MaterialPageRoute(builder: (context) {
-          return TagRecording(id: id, date: date, name: recorder, abnormal: date);
+          return TagRecording(id: id, date: dateModified, name: createdBy, tags: tags, abnormal: abnormal);
         })
     );
   }
@@ -77,7 +80,7 @@ class _RecordingsState extends State<RecordingTile> {
                         itemBuilder: (context, index) {
                           //Do Stuff Here
                           return new FlatButton(
-                              onPressed: () => _onEntryPressed(items[index]['id'], items[index]['date'], items[index]['recorder'], items[index]['abnormal']),
+                              onPressed: () => _onEntryPressed(items[index]['id'], items[index]['date_modified'], items[index]['created_by'], items[index]['tags'], items[index]['abnormal']),
                               child: Row(
                                 children: <Widget>[
                                   Expanded(

@@ -3,16 +3,18 @@ import '../mixins/audio_player.dart';
 
 class TagRecording extends StatefulWidget {
 
-  String id = "0";
-  String date = "0";
-  String name = "nurse";
-  String abnormal = "true"; 
+  final String id;
+  final String date;
+  final String name;
+  final List<String> tags;
+  final String abnormal; 
 
   TagRecording({
-    this.id,
-    this.date,
-    this.name,
-    this.abnormal
+    @required this.id,
+    @required this.date,
+    @required this.name,
+    @required this.tags,
+    @required this.abnormal
   });
 
   @override
@@ -21,24 +23,6 @@ class TagRecording extends StatefulWidget {
 
 class _TagRecordingState extends State<TagRecording> 
   with AudioPlayerController{
-
-  List<bool> tags = [];
-
-  void initState() {
-    super.initState();
-    tags = [
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false
-    ];
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,19 +43,21 @@ class _TagRecordingState extends State<TagRecording>
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children:<Widget> [
-                    CheckBoxQuery(
+                  CheckBoxQuery(
+                    checked: (widget.tags[0] == "true") ? true : false,
                     query: Text('ded'),
                     onPressed: (value) {
                       setState(() {
-                        tags[0] = value;
+                        widget.tags[0] = (value) ? "true" : "false";
                       });
                     }
                   ),
                   CheckBoxQuery(
+                    checked: (widget.tags[1] == "true") ? true : false,
                     query: Text('gonna be ded'),
                     onPressed: (value) {
                       setState(() {
-                        tags[1] = value;
+                        widget.tags[1] = (value) ? "true" : "false";
                       });
                     }
                   ),
@@ -80,19 +66,21 @@ class _TagRecordingState extends State<TagRecording>
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children:<Widget> [
-                    CheckBoxQuery(
+                  CheckBoxQuery(
+                    checked: (widget.tags[2] == "true") ? true : false,
                     query: Text('ded'),
                     onPressed: (value) {
                       setState(() {
-                        tags[0] = value;
+                        widget.tags[2] = (value) ? "true" : "false";
                       });
                     }
                   ),
                   CheckBoxQuery(
+                    checked: (widget.tags[3] == "true") ? true : false,
                     query: Text('gonna be ded'),
                     onPressed: (value) {
                       setState(() {
-                        tags[1] = value;
+                        widget.tags[3] = (value) ? "true" : "false";
                       });
                     }
                   ),
@@ -101,19 +89,21 @@ class _TagRecordingState extends State<TagRecording>
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children:<Widget> [
-                    CheckBoxQuery(
+                  CheckBoxQuery(
+                    checked: (widget.tags[4] == "true") ? true : false,
                     query: Text('ded'),
                     onPressed: (value) {
                       setState(() {
-                        tags[0] = value;
+                        widget.tags[4] = (value) ? "true" : "false";
                       });
                     }
                   ),
                   CheckBoxQuery(
+                    checked: (widget.tags[5] == "true") ? true : false,
                     query: Text('gonna be ded'),
                     onPressed: (value) {
                       setState(() {
-                        tags[1] = value;
+                        widget.tags[5] = (value) ? "true" : "false";
                       });
                     }
                   ),
@@ -122,19 +112,21 @@ class _TagRecordingState extends State<TagRecording>
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children:<Widget> [
-                    CheckBoxQuery(
+                  CheckBoxQuery(
+                    checked: (widget.tags[6] == "true") ? true : false,
                     query: Text('ded'),
                     onPressed: (value) {
                       setState(() {
-                        tags[0] = value;
+                        widget.tags[6] = (value) ? "true" : "false";
                       });
                     }
                   ),
                   CheckBoxQuery(
+                    checked: (widget.tags[7] == "true") ? true : false,
                     query: Text('gonna be ded'),
                     onPressed: (value) {
                       setState(() {
-                        tags[1] = value;
+                        widget.tags[7] = (value) ? "true" : "false";
                       });
                     }
                   ),
@@ -143,19 +135,21 @@ class _TagRecordingState extends State<TagRecording>
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children:<Widget> [
-                    CheckBoxQuery(
+                  CheckBoxQuery(
+                    checked: (widget.tags[8] == "true") ? true : false,
                     query: Text('ded'),
                     onPressed: (value) {
                       setState(() {
-                        tags[0] = value;
+                        widget.tags[8] = (value) ? "true" : "false";
                       });
                     }
                   ),
                   CheckBoxQuery(
+                    checked: (widget.tags[9] == "true") ? true : false,
                     query: Text('gonna be ded'),
                     onPressed: (value) {
                       setState(() {
-                        tags[1] = value;
+                        widget.tags[9] = (value) ? "true" : "false";
                       });
                     }
                   ),
@@ -201,24 +195,30 @@ class CheckBoxQuery extends StatefulWidget{
 
   final Text query;
   final Function onPressed;
+  final bool checked;
 
 
   CheckBoxQuery({
     final this.query,
     final this.onPressed,
+    final this.checked
   });
 
   @override
-  _CheckBoxQueryState createState() => new _CheckBoxQueryState();
+  _CheckBoxQueryState createState() => new _CheckBoxQueryState(checked: checked);
 }
 
 class _CheckBoxQueryState extends State<CheckBoxQuery> {
 
-  bool _checked;
+  _CheckBoxQueryState({
+    @required this.checked
+  });
+
+  bool checked;
 
   void initState() {
     super.initState();
-    _checked = false;
+    checked = false;
   }
 
   @override
@@ -233,10 +233,10 @@ class _CheckBoxQueryState extends State<CheckBoxQuery> {
               children: <Widget> [
                 widget.query,
                 Checkbox(
-                  value: _checked,
+                  value: checked,
                   onChanged: (value) {
                     setState(() {
-                      _checked = value;
+                      checked = value;
                       widget.onPressed(value);
                     });
                   }

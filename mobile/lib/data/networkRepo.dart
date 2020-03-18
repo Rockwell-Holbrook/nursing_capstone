@@ -83,9 +83,9 @@ Future<dynamic> get_recording(String r_url) async //get one recording from url
 }
 
 ///Pass a string of a filter
-Future<dynamic> filter_list(String filter) async //filter all patients
+Future<dynamic> filter_list(Map<String, String> filter) async //filter all patients
 {
-  var url = "https://api.byu-dept-nursingsteth-dev.amazon.byu.edu/beats/patients"+filter;
+  var url = "https://api.byu-dept-nursingsteth-dev.amazon.byu.edu/beats/patients"+filter[''];
 
   var request = await get(url);
 
