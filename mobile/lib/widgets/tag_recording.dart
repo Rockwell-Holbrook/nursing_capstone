@@ -10,7 +10,7 @@ class TagRecording extends StatefulWidget {
   final String date;
   final String name;
   final List<String> tags;
-  String abnormal;
+  bool abnormal;
 
 
   TagRecording({
@@ -37,12 +37,13 @@ class _TagRecordingState extends State<TagRecording>
 
   void initState() {
     super.initState();
-    Future<List<String>> urlHolder = getURLs();
-    urlHolder.then((value) {
-      setState(() {
-        url = value;
-      });
-    });
+    url = ['asdfsdfaasdf'];
+    // Future<List<String>> urlHolder = getURLs();
+    // urlHolder.then((value) {
+    //   setState(() {
+    //     url = value;
+    //   });
+    // });
   }
 
   Future<List<String>> getURLs() {
@@ -67,7 +68,7 @@ class _TagRecordingState extends State<TagRecording>
             children: <Widget> [
               Text('Date Taken: ' + widget.date),
               Text('Name of Recorder: ' + widget.name),
-              Text('Recording Status: ' + widget.abnormal),
+              Text('Recording Status: ' + widget.abnormal.toString()),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children:<Widget> [
@@ -187,11 +188,11 @@ class _TagRecordingState extends State<TagRecording>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children:<Widget> [
                   CheckBoxQuery(
-                    checked: (widget.abnormal == "true") ? true : false,
+                    checked: widget.abnormal,
                     query: Text('Abnormal'),
                     onPressed: (value) {
                       setState(() {
-                        widget.abnormal = (value) ? "true" : "false";
+                        widget.abnormal = value;
                     });
                   }
                  )

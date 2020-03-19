@@ -49,38 +49,38 @@ class _HomeState extends State<Home> {
     _currentlyRecording = false;
     _patientId = '';
 
-    FlutterBluetoothSerial.instance.state.then((state) {
-      setState(() { _bluetoothState = state; });
-    });
+    // FlutterBluetoothSerial.instance.state.then((state) {
+    //   setState(() { _bluetoothState = state; });
+    // });
 
-    Future.doWhile(() async {
-      // Wait if adapter not enabled
-      if (await FlutterBluetoothSerial.instance.isEnabled) {
-        return false;
-      }
-      await Future.delayed(Duration(milliseconds: 0xDD));
-      return true;
-    }).then((_) {
-      // Update the address field
-      FlutterBluetoothSerial.instance.address.then((address) {
-        setState(() { _address = address; });
-      });
-    });
+    // Future.doWhile(() async {
+    //   // Wait if adapter not enabled
+    //   if (await FlutterBluetoothSerial.instance.isEnabled) {
+    //     return false;
+    //   }
+    //   await Future.delayed(Duration(milliseconds: 0xDD));
+    //   return true;
+    // }).then((_) {
+    //   // Update the address field
+    //   FlutterBluetoothSerial.instance.address.then((address) {
+    //     setState(() { _address = address; });
+    //   });
+    // });
 
-    FlutterBluetoothSerial.instance.name.then((name) {
-      setState(() { _name = name; });
-    });
+    // FlutterBluetoothSerial.instance.name.then((name) {
+    //   setState(() { _name = name; });
+    // });
 
-    // Listen for futher state changes
-    FlutterBluetoothSerial.instance.onStateChanged().listen((BluetoothState state) {
-      setState(() {
-        _bluetoothState = state;
+    // // Listen for futher state changes
+    // FlutterBluetoothSerial.instance.onStateChanged().listen((BluetoothState state) {
+    //   setState(() {
+    //     _bluetoothState = state;
 
-        // Discoverable mode is disabled when Bluetooth gets disabled
-        _discoverableTimeoutTimer = null;
-        _discoverableTimeoutSecondsLeft = 0;
-      });
-    });
+    //     // Discoverable mode is disabled when Bluetooth gets disabled
+    //     _discoverableTimeoutTimer = null;
+    //     _discoverableTimeoutSecondsLeft = 0;
+    //   });
+    // });
   }
 
   List<BottomNavigationBarItem> items = [
