@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../mixins/audio_player.dart';
+import '../data/networkRepo.dart';
 
 class TagRecording extends StatefulWidget {
 
@@ -7,7 +8,8 @@ class TagRecording extends StatefulWidget {
   final String date;
   final String name;
   final List<String> tags;
-  final String abnormal; 
+  String abnormal;
+
 
   TagRecording({
     @required this.id,
@@ -16,6 +18,11 @@ class TagRecording extends StatefulWidget {
     @required this.tags,
     @required this.abnormal
   });
+
+  updateRecording() {
+    var body = {"patient": { "tags": tags, "abnormal": abnormal}};
+    update(id, body);
+  }
 
   @override
   _TagRecordingState createState() => new _TagRecordingState();
@@ -154,6 +161,20 @@ class _TagRecordingState extends State<TagRecording>
                     }
                   ),
                 ]
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children:<Widget> [
+                  CheckBoxQuery(
+                    checked: (widget.abnormal == "true") ? true : false,
+                    query: Text('Abnormal'),
+                    onPressed: (value) {
+                      setState(() {
+                        widget.abnormal = (value) ? "true" : "false";
+                    });
+                  }
+                 )
+               ]
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
