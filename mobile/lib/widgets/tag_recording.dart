@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../mixins/audio_player.dart';
 import '../data/networkRepo.dart';
@@ -31,11 +33,30 @@ class TagRecording extends StatefulWidget {
 class _TagRecordingState extends State<TagRecording> 
   with AudioPlayerController{
 
+    List<String> url;
+
+  void initState() {
+    super.initState();
+    Future<List<String>> urlHolder = getURLs();
+    urlHolder.then((value) {
+      setState(() {
+        url = value;
+      });
+    });
+  }
+
+  Future<List<String>> getURLs() {
+    Completer<List<String>> completer;
+    Future<List<String>> urlHolder = patient_recordings(widget.id);
+    urlHolder.then((value) =>  completer.complete(value));
+    return completer.future;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Review Records for case: ' + widget.id),
+        title: Text('Review Records for case:\n' + widget.id),
       ),
       body:
         Padding(
@@ -176,20 +197,26 @@ class _TagRecordingState extends State<TagRecording>
                  )
                ]
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children:<Widget>[
-                  FlatButton(
-                    onPressed: () => pauseAudio(),
-                    child: Icon(Icons.pause)
-                  ),
-                  FlatButton(
-                    onPressed: () => playLocalAudio('soundFileSample0.wav'),
-                    child: Text('Play test')
-                  ),
-                  FlatButton(
-                    onPressed: () => resumeAudio(),
-                    child: Icon(Icons.play_arrow)
+              Column(
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children:<Widget>[
+                      FlatButton(
+                        onPressed: () => pauseAudio(),
+                        child: Icon(Icons.pause)
+                      ),
+                      FlatButton(
+                        onPressed: () {
+                          playNetworkAudio(url[0]);
+                        },
+                        child: Text('Play test')
+                      ),
+                      FlatButton(
+                        onPressed: () => resumeAudio(),
+                        child: Icon(Icons.play_arrow)
+                      )
+                    ]
                   )
                 ]
               ),
