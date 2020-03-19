@@ -196,7 +196,7 @@ class _TagRecordingState extends State<TagRecording>
               Padding(
                 padding: EdgeInsets.all(30),
                 child: FlatButton(
-                  onPressed: () => {},
+                  onPressed: widget.updateRecording(),
                   child: Container(
                     height: 50,
                     width: 124,
