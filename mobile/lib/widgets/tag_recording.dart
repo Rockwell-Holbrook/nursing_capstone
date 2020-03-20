@@ -22,7 +22,13 @@ class TagRecording extends StatefulWidget {
   });
 
   updateRecording() {
-    var body = {"patient": { "tags": tags, "abnormal": abnormal}};
+    bool tempBool;
+    if(tags.length > 0) {
+      tempBool = true;
+    } else {
+      tempBool = false;
+    }
+    var body = {"patient": { "tags": tags, "abnormal": tempBool}};
     update(id, body);
   }
 
@@ -33,7 +39,20 @@ class TagRecording extends StatefulWidget {
 class _TagRecordingState extends State<TagRecording> 
   with AudioPlayerController{
 
-    List<String> url;
+  List<String> url;
+
+  List<String> options = [
+    'tags1',
+    'tags2',
+    'tags3',
+    'tags4',
+    'tags5',
+    'tags6',
+    'tags7',
+    'tags8',
+    'tags9',
+    'tags10'
+  ];
 
   void initState() {
     super.initState();
@@ -53,189 +72,113 @@ class _TagRecordingState extends State<TagRecording>
     return completer.future;
   }
 
+  void updateTags(String nextTag) {
+    if(widget.tags.contains(nextTag)) {
+      setState(() {
+        widget.tags.remove(nextTag);
+      });
+    } else {
+      setState(() {
+        widget.tags.add(nextTag);
+      });
+    }
+  }
+
+  bool checkChecked(int i) {
+    if(widget.tags.contains(options[i])) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Column buildCheckBoxes() {
+    List<Widget> boxes = [];
+
+    for(int i = 0; i < 10; i ++) {
+      boxes.add(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children:<Widget> [
+            CheckBoxQuery(
+              checked: checkChecked(i),
+              query: Text(options[i]),
+              onPressed: (value) {
+                updateTags(options[i-1]);
+              }
+            ),
+            CheckBoxQuery(
+              checked: checkChecked(i+1),
+              query: Text(options[i+1]),
+              onPressed: (value) {
+                updateTags(options[i]);
+              }
+            ),
+          ]
+        )
+      );
+      i++;
+    }
+
+    return Column(
+      children: <Widget>[
+        Text('Date Taken: ' + widget.date),
+        Text('Name of Recorder: ' + widget.name),
+        Text('Recording Status: ' + widget.abnormal.toString()),
+      ] + boxes + [
+        Column(
+          children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children:<Widget>[
+                  FlatButton(
+                    onPressed: () => pauseAudio(),
+                    child: Icon(Icons.pause)
+                  ),
+                  FlatButton(
+                    onPressed: () {
+                      playNetworkAudio(url[0]);
+                    },
+                    child: Text('Play test')
+                  ),
+                  FlatButton(
+                    onPressed: () => resumeAudio(),
+                    child: Icon(Icons.play_arrow)
+                  )
+                ]
+              )
+            ]
+          ),
+          Padding(
+            padding: EdgeInsets.all(30),
+            child: FlatButton(
+              onPressed: () {
+                widget.updateRecording();
+              },
+              child: Container(
+                height: 50,
+                width: 124,
+                color: Colors.blue,
+                child: Center(
+                  child: Text('Submit Diagnosis', style: TextStyle(color: Colors.white),)
+                )
+              ),
+            ),
+          )
+        ]
+      );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Review Records for case:\n' + widget.id),
       ),
-      body:
-        Padding(
-          padding: EdgeInsets.all(30),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget> [
-              Text('Date Taken: ' + widget.date),
-              Text('Name of Recorder: ' + widget.name),
-              Text('Recording Status: ' + widget.abnormal.toString()),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children:<Widget> [
-                  CheckBoxQuery(
-                    checked: (widget.tags[0] == "true") ? true : false,
-                    query: Text('ded'),
-                    onPressed: (value) {
-                      setState(() {
-                        widget.tags[0] = (value) ? "true" : "false";
-                      });
-                    }
-                  ),
-                  CheckBoxQuery(
-                    checked: (widget.tags[1] == "true") ? true : false,
-                    query: Text('gonna be ded'),
-                    onPressed: (value) {
-                      setState(() {
-                        widget.tags[1] = (value) ? "true" : "false";
-                      });
-                    }
-                  ),
-                ]
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children:<Widget> [
-                  CheckBoxQuery(
-                    checked: (widget.tags[2] == "true") ? true : false,
-                    query: Text('ded'),
-                    onPressed: (value) {
-                      setState(() {
-                        widget.tags[2] = (value) ? "true" : "false";
-                      });
-                    }
-                  ),
-                  CheckBoxQuery(
-                    checked: (widget.tags[3] == "true") ? true : false,
-                    query: Text('gonna be ded'),
-                    onPressed: (value) {
-                      setState(() {
-                        widget.tags[3] = (value) ? "true" : "false";
-                      });
-                    }
-                  ),
-                ]
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children:<Widget> [
-                  CheckBoxQuery(
-                    checked: (widget.tags[4] == "true") ? true : false,
-                    query: Text('ded'),
-                    onPressed: (value) {
-                      setState(() {
-                        widget.tags[4] = (value) ? "true" : "false";
-                      });
-                    }
-                  ),
-                  CheckBoxQuery(
-                    checked: (widget.tags[5] == "true") ? true : false,
-                    query: Text('gonna be ded'),
-                    onPressed: (value) {
-                      setState(() {
-                        widget.tags[5] = (value) ? "true" : "false";
-                      });
-                    }
-                  ),
-                ]
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children:<Widget> [
-                  CheckBoxQuery(
-                    checked: (widget.tags[6] == "true") ? true : false,
-                    query: Text('ded'),
-                    onPressed: (value) {
-                      setState(() {
-                        widget.tags[6] = (value) ? "true" : "false";
-                      });
-                    }
-                  ),
-                  CheckBoxQuery(
-                    checked: (widget.tags[7] == "true") ? true : false,
-                    query: Text('gonna be ded'),
-                    onPressed: (value) {
-                      setState(() {
-                        widget.tags[7] = (value) ? "true" : "false";
-                      });
-                    }
-                  ),
-                ]
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children:<Widget> [
-                  CheckBoxQuery(
-                    checked: (widget.tags[8] == "true") ? true : false,
-                    query: Text('ded'),
-                    onPressed: (value) {
-                      setState(() {
-                        widget.tags[8] = (value) ? "true" : "false";
-                      });
-                    }
-                  ),
-                  CheckBoxQuery(
-                    checked: (widget.tags[9] == "true") ? true : false,
-                    query: Text('gonna be ded'),
-                    onPressed: (value) {
-                      setState(() {
-                        widget.tags[9] = (value) ? "true" : "false";
-                      });
-                    }
-                  ),
-                ]
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children:<Widget> [
-                  CheckBoxQuery(
-                    checked: widget.abnormal,
-                    query: Text('Abnormal'),
-                    onPressed: (value) {
-                      setState(() {
-                        widget.abnormal = value;
-                    });
-                  }
-                 )
-               ]
-              ),
-              Column(
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children:<Widget>[
-                      FlatButton(
-                        onPressed: () => pauseAudio(),
-                        child: Icon(Icons.pause)
-                      ),
-                      FlatButton(
-                        onPressed: () {
-                          playNetworkAudio(url[0]);
-                        },
-                        child: Text('Play test')
-                      ),
-                      FlatButton(
-                        onPressed: () => resumeAudio(),
-                        child: Icon(Icons.play_arrow)
-                      )
-                    ]
-                  )
-                ]
-              ),
-              Padding(
-                padding: EdgeInsets.all(30),
-                child: FlatButton(
-                  onPressed: widget.updateRecording(),
-                  child: Container(
-                    height: 50,
-                    width: 124,
-                    color: Colors.blue,
-                    child: Text('Submit Diagnosis', style: TextStyle(color: Colors.white),)
-                  ),
-                ),
-              )
-            ]
-          ),
-        )
+      body: Padding(
+        padding: EdgeInsets.all(30),
+        child: buildCheckBoxes()
+      )
     );
   }
 }
@@ -264,11 +207,6 @@ class _CheckBoxQueryState extends State<CheckBoxQuery> {
   });
 
   bool checked;
-
-  void initState() {
-    super.initState();
-    checked = false;
-  }
 
   @override
   Widget build(BuildContext context) {

@@ -22,8 +22,8 @@ class _LoginFormState extends State<LoginForm>{
     String message = '';
     String logIn = await _user.authenticate(_user.username, _user.password);
       if (logIn != '') {
-        message = 'User sign up successful!';
-        Navigator.of(context).pushNamed('');
+        message = 'User login successful!';
+        Navigator.of(context).pushNamed('home');
       } else {
         logIn = 'Ok';
         message = "Error Logging in";
@@ -54,14 +54,15 @@ class _LoginFormState extends State<LoginForm>{
           child: new ListView(
             children: <Widget>[
               new ListTile(
-                leading: const Icon(Icons.account_box),
+                leading: const Icon(Icons.email),
                 title: new TextFormField(
                   decoration: new InputDecoration(
-                    hintText: 'myUsername', labelText: 'Username'),
-                  onSaved: (String username) {
-                    _user.username = username;
-                  },
-                ),
+                      hintText: 'email@domain.com', labelText: 'Email'),
+                  keyboardType: TextInputType.emailAddress,
+                  onSaved: (String email) {
+                    _user.username = email;
+                  }
+                )
               ),
               new ListTile(
                 leading: const Icon(Icons.lock),
@@ -72,8 +73,8 @@ class _LoginFormState extends State<LoginForm>{
                   obscureText: true,
                   onSaved: (String password) {
                     _user.password = password;
-                  },
-                ),
+                  }
+                )
               ),
               new Container(
                 padding: new EdgeInsets.all(20.0),

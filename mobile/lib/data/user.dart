@@ -1,5 +1,6 @@
 ///This page holds the classes and functions needed to authenticate
 import 'dart:convert';
+import 'stuff.dart';
 import 'package:amazon_cognito_identity_dart/cognito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -8,12 +9,8 @@ class User{
   String username;
   String email;
   String password;
-  String organizationID = '';
-  String jobTitle = '';
   CognitoUserPool userPool;
   CognitoUserSession session;
-  String userPoolID = '';
-  String appClientID = '';
 
   SharedPreferences prefs;
   CustomStorage customStore;
@@ -31,13 +28,11 @@ class User{
   }
 
   ///Registers a new gem user. If successful, returns true
-  Future<bool> register(String uname, String password, String email, String organizationID, String jobTitle) async {
+  Future<bool> register(String uname, String password) async {
     bool ready = await init();
       if(ready) {
       final userAttributes = [
-        new AttributeArg(name: 'email', value: email),
-        new AttributeArg(name: 'custom:organization_id', value: organizationID),
-        new AttributeArg(name: 'custom:job_title', value: jobTitle),
+        new AttributeArg(name: 'email', value: uname),
       ];
 
       try {

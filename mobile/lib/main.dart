@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         "reset": (BuildContext context) => new ResetPassword(),
         "home": (BuildContext context) => new Home(),
       },
-      home: Home(),
+      home: LoginForm(),
     );
   }
 }

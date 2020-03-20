@@ -1,2 +1,4 @@
 bluetooth_stream
 mobile/.flutter-plugins-dependencies
+mobile/lib/data/stuff.dart
+bluetooth_stream
