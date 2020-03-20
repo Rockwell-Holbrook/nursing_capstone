@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'pages/home.dart';
+import 'pages/loadScreen.dart';
 import 'pages/login.dart';
 import 'pages/sign_up.dart';
 import 'pages/password_reset.dart';
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
         "reset": (BuildContext context) => new ResetPassword(),
         "home": (BuildContext context) => new Home(),
       },
-      home: LoginForm(),
+      home: LoadScreen(),
     );
   }
 }

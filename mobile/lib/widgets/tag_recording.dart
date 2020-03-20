@@ -57,19 +57,17 @@ class _TagRecordingState extends State<TagRecording>
   void initState() {
     super.initState();
     url = ['asdfsdfaasdf'];
-    // Future<List<String>> urlHolder = getURLs();
-    // urlHolder.then((value) {
-    //   setState(() {
-    //     url = value;
-    //   });
-    // });
+    Future<List<String>> urlHolder = getURLs();
+    urlHolder.then((value) {
+      setState(() {
+        url = value;
+      });
+    });
   }
 
-  Future<List<String>> getURLs() {
-    Completer<List<String>> completer;
-    Future<List<String>> urlHolder = patient_recordings(widget.id);
-    urlHolder.then((value) =>  completer.complete(value));
-    return completer.future;
+  Future<List<String>> getURLs() async {
+    List<String> urlHolder = await patient_recordings(widget.id);
+    return urlHolder;
   }
 
   void updateTags(String nextTag) {
@@ -126,47 +124,52 @@ class _TagRecordingState extends State<TagRecording>
         Text('Name of Recorder: ' + widget.name),
         Text('Recording Status: ' + widget.abnormal.toString()),
       ] + boxes + [
-        Column(
-          children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children:<Widget>[
-                  FlatButton(
-                    onPressed: () => pauseAudio(),
-                    child: Icon(Icons.pause)
-                  ),
-                  FlatButton(
-                    onPressed: () {
-                      playNetworkAudio(url[0]);
-                    },
-                    child: Text('Play test')
-                  ),
-                  FlatButton(
-                    onPressed: () => resumeAudio(),
-                    child: Icon(Icons.play_arrow)
-                  )
-                ]
+        Padding(
+          padding: EdgeInsets.all(30),
+          child: FlatButton(
+            onPressed: () {
+              widget.updateRecording();
+            },
+            child: Container(
+              height: 50,
+              width: 124,
+              color: Colors.blue,
+              child: Center(
+                child: Text('Submit Diagnosis', style: TextStyle(color: Colors.white),)
               )
-            ]
-          ),
-          Padding(
-            padding: EdgeInsets.all(30),
-            child: FlatButton(
-              onPressed: () {
-                widget.updateRecording();
-              },
-              child: Container(
-                height: 50,
-                width: 124,
-                color: Colors.blue,
-                child: Center(
-                  child: Text('Submit Diagnosis', style: TextStyle(color: Colors.white),)
-                )
-              ),
             ),
-          )
-        ]
+          ),
+        )
+      ]
+    );
+  }
+
+  Column buildPlayButtons() {
+    List<Widget> buttons = [];
+
+    for(int i = 0; i < url.length; i ++) {
+      buttons.add(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children:<Widget>[
+            FlatButton(
+              onPressed: () => pauseAudio(),
+              child: Icon(Icons.pause)
+            ),
+            FlatButton(
+              onPressed: () {
+                playNetworkAudio(url[i]);
+              },
+              child: Text('Play test')
+            ),
+            FlatButton(
+              onPressed: () => resumeAudio(),
+              child: Icon(Icons.play_arrow)
+            )
+          ]
+        )
       );
+    }
   }
 
   @override
@@ -177,7 +180,12 @@ class _TagRecordingState extends State<TagRecording>
       ),
       body: Padding(
         padding: EdgeInsets.all(30),
-        child: buildCheckBoxes()
+        child: Column(
+          children: <Widget>[
+            buildCheckBoxes(),
+            buildPlayButtons()
+          ]
+        )
       )
     );
   }
