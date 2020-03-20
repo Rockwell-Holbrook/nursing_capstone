@@ -144,7 +144,7 @@ class _TagRecordingState extends State<TagRecording>
     );
   }
 
-  Column buildPlayButtons() {
+  List<Widget> buildPlayButtons() {
     List<Widget> buttons = [];
 
     for(int i = 0; i < url.length; i ++) {
@@ -170,6 +170,7 @@ class _TagRecordingState extends State<TagRecording>
         )
       );
     }
+    return buttons;
   }
 
   @override
@@ -183,8 +184,7 @@ class _TagRecordingState extends State<TagRecording>
         child: Column(
           children: <Widget>[
             buildCheckBoxes(),
-            buildPlayButtons()
-          ]
+          ] + buildPlayButtons()
         )
       )
     );
