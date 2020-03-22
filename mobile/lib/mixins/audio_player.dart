@@ -46,7 +46,7 @@ mixin AudioPlayerController {
   ///Returns an Id of the audio stream if successful, else returns 0
   Future<int> playNetworkAudio(String url) async {
     try {
-      int result = await audioPlayer.play(url);
+      int result = await audioPlayer.play(url, volume: 100);
       return result;
     } catch (e) {
       // If encountering an error, return 0

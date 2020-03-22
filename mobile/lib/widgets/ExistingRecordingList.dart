@@ -32,31 +32,37 @@ class ExistingRecordingsState extends State<ExistingRecordingList> {
     Future<List<String>> drs = localDirectories;
     drs.then((values) {
       drsHolder.addAll(values);
-      for(int i = 0; i < drsHolder.length; i++) {
-        Future<List<File>> files = getfilesInDirectory(drsHolder[i]);
-        files.then((value) {
-          if(value.length > 0) {
-            filessystem[drsHolder[i]] = value;
-            setState(() {
-              directories.add(drsHolder[i].substring(drsHolder[i].lastIndexOf('/') + 1));
-            });
-          }
-        });
-      }
+        for(int i = 0; i < drsHolder.length; i++) {
+          Future<List<File>> files = getfilesInDirectory(drsHolder[i]);
+          files.then((value) {
+            if(value.length == 5) {
+              filessystem[drsHolder[i]] = value;
+              setState(() {
+                directories.add(drsHolder[i].substring(drsHolder[i].lastIndexOf('/') + 1));
+              });
+            }
+          });
+        }
     });
   }
 
-  submitFiles() {
+  submitFiles() async {
     filessystem.forEach((key, value) {
       if(value.length == 5) {
+        int i = 0;
         for(var file in value) {
           String name = file.path.substring(file.path.lastIndexOf('/') + 1);
-          upload_file(name.substring(0, name.indexOf('.')), "test@test.com", key.substring(key.lastIndexOf('/') + 1), file);
+          Future<dynamic> holder = upload_file(name.substring(0, name.indexOf('.')), "test@test.com", key.substring(key.lastIndexOf('/') + 1), file);
+          holder.then((value) {
+            i++;
+            if(i == 5) {
+              deleteDirectory(key);
+              generateFilesFromLocalStorage();
+            }
+          });
         }
-        deleteDirectory(key);
       }
     });
-    generateFilesFromLocalStorage();
   }
 
   @override

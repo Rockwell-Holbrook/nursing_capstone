@@ -11,7 +11,7 @@ import 'package:mobile/widgets/wavGenerator.dart';
 import 'package:oscilloscope/oscilloscope.dart';
 import 'package:mobile/widgets/recording_tile.dart';
 import 'package:mobile/widgets/filter.dart';
-import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+//import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:mobile/widgets/ExistingRecordingList.dart';
 import '../data/user.dart';
 
@@ -25,7 +25,7 @@ class _HomeState extends State<Home> {
   int _pageNumber;
   int _carouselPage;
   bool _admin;
-  BluetoothState _bluetoothState = BluetoothState.UNKNOWN;
+  // BluetoothState _bluetoothState = BluetoothState.UNKNOWN;
   String _address = "";
   String _name = "";
 
@@ -110,79 +110,76 @@ class _HomeState extends State<Home> {
     return authorized;
   }
 
-  void _startReading(BluetoothDevice server) {
-    if(server.name == 'wire') {
-      print('wire)');
-      RecordingMic mic = new RecordingMic('$_carouselPage', _patientId);
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.0),
-            ),
-            child: Container(
-              height: 200,
-              width: 250,
-              color: Colors.white,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  CircularProgressIndicator(),
-                ]
-              )
-            )
-          );
-        }
-      );
-      return;
-    }
-    GlobalKey stateKey = new GlobalKey();
-    List<double> items = [];
+  void _startReading() {
+    RecordingMic mic = new RecordingMic('$_carouselPage', _patientId, context);
     showDialog(
       context: context,
-      builder: (_) {
-        ReadBluetooth(
-          server: server,
-          callback: (List<int> data) {
-            if(data != null) {
-              audio.addAll(data);
-              // setState(() {
-              //   //items.add((data-255.0)/128.0 + 0.0);
-              //   //stateKey.currentState.setState(() { });
-              // });
-            }
-          }
-        );
-
-        return Padding(
-          padding: EdgeInsets.fromLTRB(0, 150, 0, 150),
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+          ),
           child: Container(
-            width: MediaQuery.of(context).size.width,
-            color: Colors.red,
-            // child: StatefulBuilder(
-            //   key: stateKey,
-            //   builder: (BuildContext context, StateSetter setState) {
-            //     return Oscilloscope(
-            //       showYAxis: true,
-            //       padding: 10.0,
-            //       backgroundColor: Colors.black,
-            //       traceColor: Colors.red,
-            //       yAxisMax: 1.0,
-            //       yAxisMin: -1.0,
-            //       dataSet: items,
-            //     );
-            //   }
-            // )
+            height: 200,
+            width: 250,
+            color: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                CircularProgressIndicator(),
+              ]
+            )
           )
         );
       }
-    ).then((value) {
-      _writeWav();
-      audio = [];
-    });
+    );
   }
+
+    // GlobalKey stateKey = new GlobalKey();
+    // List<double> items = [];
+    // showDialog(
+    //   context: context,
+    //   builder: (_) {
+    //     ReadBluetooth(
+    //       server: server,
+    //       callback: (List<int> data) {
+    //         if(data != null) {
+    //           audio.addAll(data);
+    //           // setState(() {
+    //           //   //items.add((data-255.0)/128.0 + 0.0);
+    //           //   //stateKey.currentState.setState(() { });
+    //           // });
+    //         }
+    //       }
+    //     );
+
+    //     return Padding(
+    //       padding: EdgeInsets.fromLTRB(0, 150, 0, 150),
+    //       child: Container(
+    //         width: MediaQuery.of(context).size.width,
+    //         color: Colors.red,
+    //         // child: StatefulBuilder(
+    //         //   key: stateKey,
+    //         //   builder: (BuildContext context, StateSetter setState) {
+    //         //     return Oscilloscope(
+    //         //       showYAxis: true,
+    //         //       padding: 10.0,
+    //         //       backgroundColor: Colors.black,
+    //         //       traceColor: Colors.red,
+    //         //       yAxisMax: 1.0,
+    //         //       yAxisMin: -1.0,
+    //         //       dataSet: items,
+    //         //     );
+    //         //   }
+    //         // )
+    //       )
+    //     );
+    //   }
+    // ).then((value) {
+    //   _writeWav();
+    //   audio = [];
+    // });
 
   void _writeWav() {
     // List<int> bytes = [];
@@ -237,15 +234,16 @@ class _HomeState extends State<Home> {
                     child: FlatButton(
                       child: Text('Record'),
                       onPressed: () async {
-                        final BluetoothDevice selectedDevice = await Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) { return SelectBondedDevicePage(checkAvailability: false); })
-                        );
-                        if (selectedDevice != null) {
-                            _startReading(selectedDevice);
-                        }
-                        else {
-                          print('Connect -> no device selected');
-                        }
+                        _startReading();
+                        // final BluetoothDevice selectedDevice = await Navigator.of(context).push(
+                        //   MaterialPageRoute(builder: (context) { return SelectBondedDevicePage(checkAvailability: false); })
+                        // );
+                        // if (selectedDevice != null) {
+                        //     _startReading(selectedDevice);
+                        // }
+                        // else {
+                        //   print('Connect -> no device selected');
+                        // }
                       }
                     )
                   ),

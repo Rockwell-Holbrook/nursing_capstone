@@ -19,7 +19,7 @@ Future<String> new_patient(String user) async
 }
 
 //Writes one file for a patient to the db under the user's credentials
-void upload_file(String location, String user, String patient_id, File file) async //user is an email
+dynamic upload_file(String location, String user, String patient_id, File file) async //user is an email
 {
   var url = "https://api.byu-dept-nursingsteth-dev.amazon.byu.edu/beats/patients/"+patient_id+"/recordings";
 
@@ -32,8 +32,7 @@ void upload_file(String location, String user, String patient_id, File file) asy
 
   var request = await put(response_body["url"], body: file.readAsBytesSync());
 
-  print(request);
-
+  return request;
 }
 
 //For paginating on the admin page. If token is an empty String, sends first search back
@@ -55,22 +54,15 @@ Future<dynamic> all_patients(String token) async //return next token and all pat
 Future<List<String>> patient_recordings(String patient_id) async //returns patients recordings as a list
 {
   var url = "https://api.byu-dept-nursingsteth-dev.amazon.byu.edu/beats/patients/"+patient_id+"/recordings";
-
   var request = await get(url);
-
   final response_body = json.decode(request.body);
-
   List<String> recordings = [];
   for (int i  = 0; i < response_body["recordings"].length; i++)
   {
     final url = response_body["recordings"].elementAt(i);
-
-    var r_url  =  url["url"];
-
-    var single = await get_recording(r_url);
-    recordings.add(single);
+    recordings.add(url["url"]);    
   }
-    return recordings;
+  return recordings;
 }
 
 //Use one of the URLs queried from patient_recordings to get the WAV file
@@ -96,9 +88,11 @@ Future<dynamic> filter_list(Map<String, String> filter) async //filter all patie
 
 //body format { "patient": { "tags": ["tag1", "tag2"], "abnormal": true}};
 //Used when the administrator diagnoses and adds tags
-void update(String patient_id, body) async 
+dynamic update(String patient_id, body) async 
 {
   var url = "https://api.byu-dept-nursingsteth-dev.amazon.byu.edu/beats/patients/"+patient_id;
 
   var request = await put(url, body: JsonEncoder().convert(body));
+
+  return request;
 }

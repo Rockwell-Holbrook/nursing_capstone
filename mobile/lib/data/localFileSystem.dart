@@ -44,8 +44,8 @@ import 'dart:io';
   ///Deletes a directory
   bool deleteDirectory(String dr) {
     try{
-      // Directory directory = Directory(dr);
-      // directory.deleteSync(recursive: true);
+      Directory directory = Directory(dr);
+      directory.deleteSync(recursive: true);
       return true;
     } catch (e) {
       print(e);

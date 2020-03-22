@@ -1,21 +1,23 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:file/local.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
 import 'package:path_provider/path_provider.dart';
 
 class RecordingMic {
 
-  RecordingMic(String filename, String patientId) {
+  RecordingMic(String filename, String patientId, BuildContext buildContext) {
     this.filename = filename;
     this.patientId = patientId;
+    this.buildContext = buildContext;
     writeAudio();
   }
 
   String filename;
   String path;
   String patientId;
-
+  BuildContext buildContext;
   
   ///Get the current directory
   Future<String> get _localPath async {
@@ -59,10 +61,11 @@ class RecordingMic {
           var recording = await recorder.current(channel: 0);
 
           await new Future.delayed(const Duration(seconds : 10));
-
+          
           var result = await recorder.stop();
           LocalFileSystem localFileSystem = new LocalFileSystem(); 
           File file = localFileSystem.file(result.path);
+          Navigator.of(buildContext).pop();
         });
       } else {
         print('error accessing directory');

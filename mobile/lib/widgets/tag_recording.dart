@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../mixins/audio_player.dart';
 import '../data/networkRepo.dart';
+import './recording_tile.dart';
 
 class TagRecording extends StatefulWidget {
 
@@ -10,7 +11,8 @@ class TagRecording extends StatefulWidget {
   final String date;
   final String name;
   final List<String> tags;
-  bool abnormal;
+  final String abnormal;
+  final Function callback;
 
 
   TagRecording({
@@ -18,18 +20,21 @@ class TagRecording extends StatefulWidget {
     @required this.date,
     @required this.name,
     @required this.tags,
-    @required this.abnormal
+    @required this.abnormal,
+    @required this.callback
   });
 
-  updateRecording() {
-    bool tempBool;
+  updateRecording(BuildContext context) async {
+    String tempBool;
     if(tags.length > 0) {
-      tempBool = true;
+      tempBool = 'true';
     } else {
-      tempBool = false;
+      tempBool = 'false';
     }
     var body = {"patient": { "tags": tags, "abnormal": tempBool}};
-    update(id, body);
+    var result = await update(id, body);
+    callback();
+    Navigator.of(context).pop();
   }
 
   @override
@@ -101,7 +106,7 @@ class _TagRecordingState extends State<TagRecording>
             CheckBoxQuery(
               checked: checkChecked(i),
               query: Text(options[i]),
-              onPressed: (value) {
+              onPressed: (value) async {
                 updateTags(options[i-1]);
               }
             ),
@@ -122,13 +127,13 @@ class _TagRecordingState extends State<TagRecording>
       children: <Widget>[
         Text('Date Taken: ' + widget.date),
         Text('Name of Recorder: ' + widget.name),
-        Text('Recording Status: ' + widget.abnormal.toString()),
+        Text('Recording Status: ' + widget.abnormal),
       ] + boxes + [
         Padding(
           padding: EdgeInsets.all(30),
           child: FlatButton(
             onPressed: () {
-              widget.updateRecording();
+              widget.updateRecording(context);
             },
             child: Container(
               height: 50,
@@ -148,6 +153,7 @@ class _TagRecordingState extends State<TagRecording>
     List<Widget> buttons = [];
 
     for(int i = 0; i < url.length; i ++) {
+      bool paused = false;
       buttons.add(
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -184,7 +190,13 @@ class _TagRecordingState extends State<TagRecording>
         child: Column(
           children: <Widget>[
             buildCheckBoxes(),
-          ] + buildPlayButtons()
+            Container(
+              height: 100,
+              child: ListView(
+                children: buildPlayButtons()
+              )
+            )
+          ]
         )
       )
     );
