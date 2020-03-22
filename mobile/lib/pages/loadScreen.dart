@@ -5,25 +5,24 @@ class LoadScreen extends StatelessWidget {
 
   GlobalKey<ScaffoldState> scaffKey = new GlobalKey();
 
-  LoadScreen() {
-    checkSession();
-  }
-
-  void checkSession() async {
+  void checkSession(BuildContext context) async {
     User user = new User();
     await user.init();
     Future<bool> activeSession = user.checkActiveSession();
     activeSession.then((active) {
       if(active) {
-        Navigator.of(scaffKey.currentState.context).pushReplacementNamed('home');
+        Navigator.of(context).pushReplacementNamed('home');
       } else {
-        Navigator.of(scaffKey.currentState.context).pushReplacementNamed('login');
+        Navigator.of(context).pushReplacementNamed('login');
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
+
+    checkSession(context);
+
     return Scaffold(
       key: scaffKey,
       body: Column(

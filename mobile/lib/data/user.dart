@@ -20,21 +20,45 @@ class User{
     prefs = await SharedPreferences.getInstance();
     if (prefs != null) {
       customStore = new CustomStorage(prefs);
-      userPool = new CognitoUserPool(userPoolID, appClientID, storage: customStore);
       return true;
     } else {
       return false;
     }
   }
 
+  ///Updates the default user of this phone to be an admin
+  Future<bool> saveAsAdmin(String uname) async {
+    if(uname.contains('admin/')) {
+      await prefs.setString('admin', 'admin');
+    } else {
+      await prefs.setString('admin', '');
+    }
+    return true;
+  }
+
+  ///Checks local storage to see if the user is an admin
+  setUserType() {
+    String type = '';
+    String temp = prefs.getString('admin');
+    if(temp != null) {
+      type = temp;
+    }
+    if(type == 'admin') {
+      userPool = new CognitoUserPool(userPoolID, adminAppClientID, storage: customStore);
+    } else {
+      userPool = new CognitoUserPool(userPoolID, appClientID, storage: customStore);
+    }
+  }
+
   ///Registers a new gem user. If successful, returns true
-  Future<bool> register(String uname, String password) async {
+  Future<bool> register(String uname, String email, String password) async {
     bool ready = await init();
+    await saveAsAdmin(uname);
+    setUserType();
       if(ready) {
       final userAttributes = [
-        new AttributeArg(name: 'email', value: uname),
+        new AttributeArg(name: 'email', value: email),
       ];
-
       try {
         await userPool.signUp(uname, password, userAttributes: userAttributes);
         return true;
@@ -51,6 +75,8 @@ class User{
   ///If successful, returns JWTToken
   Future<String> authenticate(String username, String password) async {
     bool ready = await init();
+    await saveAsAdmin(username);
+    setUserType();
     if(ready) { 
       final cognitoUser = new CognitoUser(username, userPool, storage: userPool.storage);
       final authDetails = new AuthenticationDetails(username: username, password: password);
@@ -83,6 +109,7 @@ class User{
 
   Future<bool> confirmEmail(String confirmationCode) async {
     bool ready = await init();
+    setUserType();
     if(ready) {
       final cognitoUser = new CognitoUser(username, userPool, storage: userPool.storage);
       bool registrationConfirmed = false;
@@ -112,6 +139,8 @@ class User{
   }
 
   Future<bool> checkActiveSession() async {
+    await init();
+    setUserType();
     final CognitoUser user = await userPool.getCurrentUser();
     if(user != null) {
       final session = await user.getSession();
@@ -123,6 +152,7 @@ class User{
   }
 
   Future<CognitoUserSession> getActiveSession() async {
+    setUserType();
     final CognitoUser user = await userPool.getCurrentUser();
     if(user != null) {
       final session = await user.getSession();
@@ -134,6 +164,8 @@ class User{
 
   Future<String> sendPasswordReset() async {
     bool ready = await init();
+    await saveAsAdmin(username);
+    setUserType();
     if(ready) {
       final cognitoUser = new CognitoUser(username, userPool, storage: userPool.storage);
       dynamic data;

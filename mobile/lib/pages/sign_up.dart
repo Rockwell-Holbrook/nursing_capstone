@@ -18,72 +18,67 @@ class _SignUpState extends State<SignUp> {
     _formKey.currentState.save();
     String message = '';
     Future<bool> register = 
-        _user.register(_user.username, _user.password);
+        _user.register(_user.username, _user.email, _user.password);
     register.then((value) {
       message = 'User sign up successful!';
       if (value == true) {
         print(value.toString());
         BuildContext buildContext = this.context;
-        Navigator.pushReplacementNamed(buildContext, 'home');
-        // showDialog(
-        //   context: buildContext,
-        //   builder: (BuildContext context) {
-
-        //     String confirmationCode = '';
-
-        //     return Dialog(
-        //       child: Column(
-        //         children: <Widget> [
-        //           Text('A confirmation code has been emailed to you. \n Enter it below to finish creating account:'),
-        //           new TextFormField(
-        //             decoration: new InputDecoration(
-        //               hintText: 'Code', labelText: 'Confirmarion Code'),
-        //             onChanged: (String confirmation) {
-        //               setState(() {
-        //                 confirmationCode = confirmation;
-        //               });
-        //             }
-        //           ),
-        //           new Container(
-        //             padding: new EdgeInsets.all(20.0),
-        //             width: MediaQuery.of(context).size.width,
-        //             child: new RaisedButton(
-        //               child: new Text(
-        //                 'Create Account',
-        //                 style: new TextStyle(color: Colors.white),
-        //               ),
-        //               onPressed: () {
-        //                 Future<bool> confirmed = _user.confirmEmail(confirmationCode);
-        //                 confirmed.then((success) {
-        //                   if(success) {
-        //                     Navigator.pushReplacementNamed(buildContext, 'home');
-        //                   } else {
-        //                     final snackBar = new SnackBar(
-        //                       content: new Text(message),
-        //                       action: new SnackBarAction(
-        //                         label: 'Confirmation Code Wrong - Try Again',
-        //                         onPressed: () {
-        //                           Navigator.pop(_scaffoldKey.currentContext);
-        //                         },
-        //                       ),
-        //                       duration: new Duration(seconds: 30),
-        //                     );
-        //                     _scaffoldKey.currentState.showSnackBar(snackBar);
-        //                   }
-        //                 });
-        //               },
-        //               color: Colors.blue,
-        //             ),
-        //             margin: new EdgeInsets.only(
-        //               top: 10.0,
-        //             ),
-        //           ),
-        //         ]
-        //       )
-        //     );
-        //   }
-        // );
-      
+        showDialog(
+          context: buildContext,
+          builder: (BuildContext context) {
+            String confirmationCode = '';
+            return Dialog(
+              child: Column(
+                children: <Widget> [
+                  Text('A confirmation code has been emailed to you. \n Enter it below to finish creating account:'),
+                  new TextFormField(
+                    decoration: new InputDecoration(
+                      hintText: 'Code', labelText: 'Confirmarion Code'),
+                    onChanged: (String confirmation) {
+                      confirmationCode = confirmation;
+                    }
+                  ),
+                  new Container(
+                    padding: new EdgeInsets.all(20.0),
+                    width: MediaQuery.of(context).size.width,
+                    child: new RaisedButton(
+                      child: new Text(
+                        'Create Account',
+                        style: new TextStyle(color: Colors.white),
+                      ),
+                      onPressed: () {
+                        Future<bool> confirmed = _user.confirmEmail(confirmationCode);
+                        confirmed.then((success) {
+                          if(success) {
+                            Navigator.pop(context);
+                            Navigator.pushReplacementNamed(buildContext, 'home');
+                          } else {
+                            final snackBar = new SnackBar(
+                              content: new Text(message),
+                              action: new SnackBarAction(
+                                label: 'Confirmation Code Wrong - Try Again',
+                                onPressed: () {
+                                  Navigator.pop(_scaffoldKey.currentContext);
+                                },
+                              ),
+                              duration: new Duration(seconds: 30),
+                            );
+                            _scaffoldKey.currentState.showSnackBar(snackBar);
+                          }
+                        });
+                      },
+                      color: Colors.blue,
+                    ),
+                    margin: new EdgeInsets.only(
+                      top: 10.0,
+                    ),
+                  ),
+                ]
+              )
+            );
+          }
+        );
       } else {
         final snackBar = new SnackBar(
           content: new Text(message),
@@ -117,13 +112,28 @@ class _SignUpState extends State<SignUp> {
           child: new ListView(
             children: <Widget>[
               new ListTile(
+                leading: const Icon(Icons.person),
+                title: new TextFormField(
+                  decoration: new InputDecoration(
+                      hintText: 'myUsername', labelText: 'Username'),
+                  keyboardType: TextInputType.text,
+                  onSaved: (String username) {
+                    if(username.startsWith('admin/')) {
+                      _user.username = username.replaceFirst('admin/', '');
+                    } else {
+                      _user.username = username; 
+                    }
+                  },
+                )
+              ),
+              new ListTile(
                 leading: const Icon(Icons.email),
                 title: new TextFormField(
                   decoration: new InputDecoration(
                       hintText: 'email@domain.com', labelText: 'Email'),
                   keyboardType: TextInputType.emailAddress,
                   onSaved: (String email) {
-                    _user.username = email;
+                    _user.email = email;
                   },
                 ),
               ),

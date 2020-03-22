@@ -53,13 +53,13 @@ class _LoginFormState extends State<LoginForm>{
           child: new ListView(
             children: <Widget>[
               new ListTile(
-                leading: const Icon(Icons.email),
+                leading: const Icon(Icons.person),
                 title: new TextFormField(
                   decoration: new InputDecoration(
-                      hintText: 'email@domain.com', labelText: 'Email'),
-                  keyboardType: TextInputType.emailAddress,
-                  onSaved: (String email) {
-                    _user.username = email;
+                      hintText: 'myUsername', labelText: 'Username'),
+                  keyboardType: TextInputType.text,
+                  onSaved: (String username) {
+                    _user.username = username;
                   }
                 )
               ),
@@ -107,7 +107,7 @@ class _LoginFormState extends State<LoginForm>{
                 width: screenSize.width,
                 child: new FlatButton(
                   child: new Text(
-                    'Forgot Password',
+                    'Reset Password',
                     style: new TextStyle(color: Colors.blue),
                   ),
                   onPressed: () {
