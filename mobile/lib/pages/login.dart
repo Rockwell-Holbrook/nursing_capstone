@@ -24,12 +24,11 @@ class _LoginFormState extends State<LoginForm>{
         message = 'User login successful!';
         Navigator.of(context).pushNamed('home');
       } else {
-        logIn = 'Ok';
-        message = "Error Logging in";
+        message = 'Unable to log in';
         final snackBar = new SnackBar(
           content: new Text(message),
           action: new SnackBarAction(
-            label: logIn,
+            label: 'Ok',
             onPressed: () {
               Scaffold.of(buildcontext).hideCurrentSnackBar();
             },

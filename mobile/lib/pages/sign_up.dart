@@ -10,11 +10,10 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
 
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   User _user = new User();
 
-  void submit() async {
+  void submit(BuildContext ctx) async {
     _formKey.currentState.save();
     String message = '';
     Future<bool> register = 
@@ -57,14 +56,14 @@ class _SignUpState extends State<SignUp> {
                             final snackBar = new SnackBar(
                               content: new Text(message),
                               action: new SnackBarAction(
-                                label: 'Confirmation Code Wrong - Try Again',
+                                label: 'Ok',
                                 onPressed: () {
-                                  Navigator.pop(_scaffoldKey.currentContext);
+                                  Navigator.of(ctx).pop();
                                 },
                               ),
                               duration: new Duration(seconds: 30),
                             );
-                            _scaffoldKey.currentState.showSnackBar(snackBar);
+                            Scaffold.of(ctx).showSnackBar(snackBar);
                           }
                         });
                       },
@@ -80,17 +79,18 @@ class _SignUpState extends State<SignUp> {
           }
         );
       } else {
+        message = 'Unable to Create Account';
         final snackBar = new SnackBar(
           content: new Text(message),
           action: new SnackBarAction(
-            label: 'Local Application Error (not connected to internet?) - Try Again',
+            label: 'Ok',
             onPressed: () {
-              Navigator.pop(_scaffoldKey.currentContext);
+              Navigator.of(ctx).pop();
             },
           ),
           duration: new Duration(seconds: 30),
         );
-        _scaffoldKey.currentState.showSnackBar(snackBar);
+        Scaffold.of(ctx).showSnackBar(snackBar);
       }
     }).catchError((e) {
       message = e.toString();
@@ -102,7 +102,6 @@ class _SignUpState extends State<SignUp> {
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
     return new Scaffold(
-      key: _scaffoldKey,
       appBar: new AppBar(
         title: new Text('Sign Up'),
       ),
@@ -152,19 +151,18 @@ class _SignUpState extends State<SignUp> {
               new Container(
                 padding: new EdgeInsets.all(20.0),
                 width: screenSize.width,
-                child: new RaisedButton(
-                  child: new Text(
-                    'Sign Up',
-                    style: new TextStyle(color: Colors.white),
-                  ),
-                  onPressed: () {
-                    submit();
-                  },
-                  color: Colors.blue,
-                ),
-                margin: new EdgeInsets.only(
-                  top: 10.0,
-                ),
+                child: Builder(
+                  builder: (ctx) => new RaisedButton(
+                    child: new Text(
+                      'Create Account',
+                      style: new TextStyle(color: Colors.white),
+                    ),
+                    onPressed: () async {
+                      submit(ctx);
+                    },
+                    color: Colors.blue,
+                  )
+                )
               ),
             ],
           ),
