@@ -34,6 +34,7 @@ class _HomeState extends State<Home> {
 
   List<int> audio = [];
 
+  GlobalKey<NavigatorState> key = new GlobalKey();
   GlobalKey<CarouselDotsState> _keyChild = GlobalKey();
   GlobalKey<ExistingRecordingsState> _recordinList = GlobalKey();
 
@@ -48,39 +49,6 @@ class _HomeState extends State<Home> {
 
     _currentlyRecording = false;
     _patientId = '';
-
-    // FlutterBluetoothSerial.instance.state.then((state) {
-    //   setState(() { _bluetoothState = state; });
-    // });
-
-    // Future.doWhile(() async {
-    //   // Wait if adapter not enabled
-    //   if (await FlutterBluetoothSerial.instance.isEnabled) {
-    //     return false;
-    //   }
-    //   await Future.delayed(Duration(milliseconds: 0xDD));
-    //   return true;
-    // }).then((_) {
-    //   // Update the address field
-    //   FlutterBluetoothSerial.instance.address.then((address) {
-    //     setState(() { _address = address; });
-    //   });
-    // });
-
-    // FlutterBluetoothSerial.instance.name.then((name) {
-    //   setState(() { _name = name; });
-    // });
-
-    // // Listen for futher state changes
-    // FlutterBluetoothSerial.instance.onStateChanged().listen((BluetoothState state) {
-    //   setState(() {
-    //     _bluetoothState = state;
-
-    //     // Discoverable mode is disabled when Bluetooth gets disabled
-    //     _discoverableTimeoutTimer = null;
-    //     _discoverableTimeoutSecondsLeft = 0;
-    //   });
-    // });
   }
 
   List<BottomNavigationBarItem> items = [
@@ -136,51 +104,6 @@ class _HomeState extends State<Home> {
     );
   }
 
-    // GlobalKey stateKey = new GlobalKey();
-    // List<double> items = [];
-    // showDialog(
-    //   context: context,
-    //   builder: (_) {
-    //     ReadBluetooth(
-    //       server: server,
-    //       callback: (List<int> data) {
-    //         if(data != null) {
-    //           audio.addAll(data);
-    //           // setState(() {
-    //           //   //items.add((data-255.0)/128.0 + 0.0);
-    //           //   //stateKey.currentState.setState(() { });
-    //           // });
-    //         }
-    //       }
-    //     );
-
-    //     return Padding(
-    //       padding: EdgeInsets.fromLTRB(0, 150, 0, 150),
-    //       child: Container(
-    //         width: MediaQuery.of(context).size.width,
-    //         color: Colors.red,
-    //         // child: StatefulBuilder(
-    //         //   key: stateKey,
-    //         //   builder: (BuildContext context, StateSetter setState) {
-    //         //     return Oscilloscope(
-    //         //       showYAxis: true,
-    //         //       padding: 10.0,
-    //         //       backgroundColor: Colors.black,
-    //         //       traceColor: Colors.red,
-    //         //       yAxisMax: 1.0,
-    //         //       yAxisMin: -1.0,
-    //         //       dataSet: items,
-    //         //     );
-    //         //   }
-    //         // )
-    //       )
-    //     );
-    //   }
-    // ).then((value) {
-    //   _writeWav();
-    //   audio = [];
-    // });
-
   void _writeWav() {
     // List<int> bytes = [];
     // for(int i = 0; i < audio.length; i++) {
@@ -193,6 +116,13 @@ class _HomeState extends State<Home> {
 
 @override
   Widget build(BuildContext context) {
+
+    List<String> routes = [
+      '/',
+      '/1',
+      '/2'
+    ];
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Beats Stethoscope'),
@@ -201,116 +131,127 @@ class _HomeState extends State<Home> {
           callback: (){},
           submit:(){}
       ) : Container(),
-      body: IndexedStack(
-        index: _pageNumber,
-        children: <Widget>[
-          (_currentlyRecording)
-          ? Column(
-            children: <Widget>[
-              Carousel(
-                callback: (index) {
-                  setState(() {
-                    _carouselPage = index;
-                  });
-                  _keyChild.currentState.changeDots(index);
-                },
-                submit: () {
-                  print('submit');
-                  setState(() {
-                    _patientId = '';
-                    _currentlyRecording = false;
-                  });
-                  _recordinList.currentState.generateFilesFromLocalStorage();
-                },
-              ),
-              CarouselDots(_keyChild),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Container(
-                    height: 50,
-                    width: 100,
-                    color: Colors.blue,
+      body: Navigator(
+        key: key,
+        onGenerateRoute: (RouteSettings settings) {
+          return MaterialPageRoute(
+            settings: settings,
+            builder: (BuildContext context) {
+              switch(settings.name) {
+                case '/':
+                  return (_currentlyRecording)
+                  ? Column(
+                    children: <Widget>[
+                      Carousel(
+                        callback: (index) {
+                          setState(() {
+                            _carouselPage = index;
+                          });
+                          _keyChild.currentState.changeDots(index);
+                        },
+                        submit: () {
+                          print('submit');
+                          setState(() {
+                            _patientId = '';
+                            _currentlyRecording = false;
+                          });
+                          _recordinList.currentState.generateFilesFromLocalStorage();
+                        },
+                      ),
+                      CarouselDots(_keyChild),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          Container(
+                            height: 50,
+                            width: 100,
+                            color: Colors.blue,
+                            child: FlatButton(
+                              child: Text('Record'),
+                              onPressed: () async {
+                                _startReading();
+                              }
+                            )
+                          ),
+                          Container(
+                            height: 50,
+                            width: 100,
+                            color: Colors.blue,
+                            child: FlatButton(
+                              child: Text('Review'),
+                              onPressed: (){
+                                // WavGenerator wav = new WavGenerator("soundFileSample$_carouselPage", [0]);
+                                // Future<File> file = wav.localFile;
+                                // file.then((value) {
+                                //   Future<Uint8List> test = value.readAsBytes();
+                                //   test.then((nextValue) {
+                                //     String newStuff = nextValue.toString();
+                                //   });
+                                // });
+                              },
+                            )
+                          )
+                        ],
+                      ), 
+                      // BeatsForm(),
+                    ],
+                  )
+                  : Container(
                     child: FlatButton(
-                      child: Text('Record'),
+                      child: Center(
+                        child: Container(
+                          height: 50,
+                          width: 150,
+                          color: Colors.blue,
+                          child: Center(
+                            child: Text('Create New Patient', style: TextStyle(color: Colors.white),)
+                          )
+                        )
+                      ),
                       onPressed: () async {
-                        _startReading();
-                        // final BluetoothDevice selectedDevice = await Navigator.of(context).push(
-                        //   MaterialPageRoute(builder: (context) { return SelectBondedDevicePage(checkAvailability: false); })
-                        // );
-                        // if (selectedDevice != null) {
-                        //     _startReading(selectedDevice);
-                        // }
-                        // else {
-                        //   print('Connect -> no device selected');
-                        // }
-                      }
-                    )
-                  ),
-                  Container(
-                    height: 50,
-                    width: 100,
-                    color: Colors.blue,
-                    child: FlatButton(
-                      child: Text('Review'),
-                      onPressed: (){
-                        // WavGenerator wav = new WavGenerator("soundFileSample$_carouselPage", [0]);
-                        // Future<File> file = wav.localFile;
-                        // file.then((value) {
-                        //   Future<Uint8List> test = value.readAsBytes();
-                        //   test.then((nextValue) {
-                        //     String newStuff = nextValue.toString();
-                        //   });
-                        // });
+                        // User user = new User();
+                        // await user.init();
+                        String holderId = await new_patient('test@test.com');//user.username
+                        setState(() {
+                          _patientId = holderId;
+                          _currentlyRecording = true;
+                        });
                       },
-                    )
-                  )
-                ],
-              ), 
-              //BeatsForm(),
-            ],
-          )
-          : Container(
-            child: FlatButton(
-              child: Center(
-                child: Container(
-                  height: 50,
-                  width: 150,
-                  color: Colors.blue,
-                  child: Center(
-                    child: Text('Create New Patient', style: TextStyle(color: Colors.white),)
-                  )
-                )
-              ),
-              onPressed: () async {
-                // User user = new User();
-                // await user.init();
-                String holderId = await new_patient('test@test.com');//user.username
-                setState(() {
-                  _patientId = holderId;
-                  _currentlyRecording = true;
-                });
-              },
-            ),
-          ),
-          //index two
-          (_admin) ? RecordingTile(
-              callback: (){},
-              submit:(){}
-          ) : Container(),
-          ExistingRecordingList(
-            key: _recordinList,
-          )
-        ],
+                    ),
+                  );
+                  break;
+                case '/1':
+                  return (_admin) 
+                  ? RecordingTile(
+                    callback: (){},
+                    submit:(){}
+                  ) 
+                  : Container();
+                  break;
+                case '/2':
+                  return ExistingRecordingList(
+                    key: _recordinList,
+                  );
+                  break;
+                default:
+                  return Container();
+                  break;
+              }
+            }
+          );
+        }
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: _getItems(),
         currentIndex: _pageNumber,
         //type: BottomNavigationBarType.shifting,
         onTap: (index) {
-          setState(() {
-           _pageNumber = index; 
-          });
+          if(_pageNumber != index) {
+            setState(() {
+            _pageNumber = index; 
+            });
+            key.currentState.popAndPushNamed(routes[index]);
+          }
         },
       ),
     );

@@ -64,6 +64,7 @@ class RecordingMic {
           
           var result = await recorder.stop();
           LocalFileSystem localFileSystem = new LocalFileSystem(); 
+          await new Future.delayed(const Duration(seconds : 3));
           File file = localFileSystem.file(result.path);
           Navigator.of(buildContext).pop();
         });

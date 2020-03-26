@@ -33,7 +33,7 @@ class RecordingsTileState extends State<RecordingTile> {
   void _onEntryPressed(String id, String dateModified, String createdBy, List<String> tags, String abnormal) async {
     Navigator.of(context).push(
         MaterialPageRoute(builder: (context) {
-          return TagRecording(id: id, date: dateModified, name: createdBy, tags: tags, abnormal: abnormal, callback: () {this.initState();});
+          return TagRecording(id: id, date: dateModified, name: createdBy, tags: tags, abnormal: abnormal);
         })
     );
   }

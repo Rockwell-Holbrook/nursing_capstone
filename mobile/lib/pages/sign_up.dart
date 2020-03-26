@@ -54,7 +54,7 @@ class _SignUpState extends State<SignUp> {
                             Navigator.pushReplacementNamed(buildContext, 'home');
                           } else {
                             final snackBar = new SnackBar(
-                              content: new Text(message),
+                              content: new Text('Unable to confirm email'),
                               action: new SnackBarAction(
                                 label: 'Ok',
                                 onPressed: () {

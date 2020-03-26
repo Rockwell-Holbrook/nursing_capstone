@@ -12,7 +12,6 @@ class TagRecording extends StatefulWidget {
   final String name;
   final List<String> tags;
   final String abnormal;
-  final Function callback;
 
 
   TagRecording({
@@ -21,7 +20,6 @@ class TagRecording extends StatefulWidget {
     @required this.name,
     @required this.tags,
     @required this.abnormal,
-    @required this.callback
   });
 
   updateRecording(BuildContext context) async {
@@ -33,7 +31,6 @@ class TagRecording extends StatefulWidget {
     }
     var body = {"patient": { "tags": tags, "abnormal": tempBool}};
     var result = await update(id, body);
-    callback();
     Navigator.of(context).pop();
   }
 
@@ -187,16 +184,10 @@ class _TagRecordingState extends State<TagRecording>
       ),
       body: Padding(
         padding: EdgeInsets.all(30),
-        child: Column(
+        child: ListView(
           children: <Widget>[
             buildCheckBoxes(),
-            Container(
-              height: 100,
-              child: ListView(
-                children: buildPlayButtons()
-              )
-            )
-          ]
+          ] + buildPlayButtons()
         )
       )
     );
