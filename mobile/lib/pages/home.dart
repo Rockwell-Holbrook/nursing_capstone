@@ -1,19 +1,14 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mobile/data/networkRepo.dart';
-import 'dart:io';
 import 'package:mobile/widgets/carousel_dots.dart';
-import 'package:mobile/widgets/select_device.dart';
 import 'package:mobile/widgets/carousel.dart';
 import 'package:mobile/widgets/recording.dart';
-import 'package:mobile/widgets/read_bluetooth.dart';
 import 'package:mobile/widgets/wavGenerator.dart';
 import 'package:oscilloscope/oscilloscope.dart';
 import 'package:mobile/widgets/recording_tile.dart';
 import 'package:mobile/widgets/filter.dart';
-//import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:mobile/widgets/ExistingRecordingList.dart';
-import '../data/user.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -41,6 +36,8 @@ class _HomeState extends State<Home> {
   bool _currentlyRecording;
   String _patientId;
 
+  Oscilloscope oscilloscope;
+
   void initState() {
     super.initState();
     _admin = true;
@@ -49,6 +46,12 @@ class _HomeState extends State<Home> {
 
     _currentlyRecording = false;
     _patientId = '';
+
+    oscilloscope = new Oscilloscope(
+      yAxisMax: 440,
+      yAxisMin: -440,
+      dataSet: []
+    );
   }
 
   List<BottomNavigationBarItem> items = [
@@ -79,36 +82,85 @@ class _HomeState extends State<Home> {
   }
 
   void _startReading() {
-    RecordingMic mic = new RecordingMic('$_carouselPage', _patientId, context);
     showDialog(
       context: context,
       builder: (context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-          child: Container(
-            height: 200,
-            width: 250,
-            color: Colors.white,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                CircularProgressIndicator(),
-              ]
-            )
-          )
+
+        GlobalKey stateKey = new GlobalKey(); 
+
+        List<double> volumes = [];
+        void callback(double nextValue) {
+          stateKey.currentState.setState(() { 
+            volumes.add(nextValue * 2.828); //2*sqrt(2) rms->peak
+              oscilloscope = new Oscilloscope(
+                yAxisMax: 440,
+                yAxisMin: -440,
+                dataSet: volumes
+              );
+          });
+        }
+        RecordingMic mic = new RecordingMic('$_carouselPage', _patientId, context, callback);
+        Future<bool> ready = mic.init();
+        ready.then((value) {
+          mic.viewAudio();
+        });
+
+        return  StatefulBuilder(
+          key: stateKey,
+          builder: (context, setState) { 
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              child: Container(
+                height: 300,
+                width: 250,
+                color: Colors.white,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      height: 250,
+                      width: 250,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Expanded(
+                            flex: 1,
+                            child: oscilloscope,
+                          )
+                        ]
+                      )
+                    ),
+                    Row(
+                      children: <Widget>[
+                        FlatButton(
+                          child: Text('cancel'),
+                          onPressed:() => mic.cancel()
+                        ),
+                        FlatButton(
+                          child: Text('startRecording'),
+                          onPressed:() async {
+                            await mic.cancel();
+                            await mic.init();
+                            await mic.writeAudio();
+                          }
+                        )
+                      ]
+                    )
+                    //CircularProgressIndicator(),
+                  ]
+                )
+              )
+            );
+          }
         );
       }
     );
   }
 
   void _writeWav() {
-    // List<int> bytes = [];
-    // for(int i = 0; i < audio.length; i++) {
-    //   bytes.add(audio[i].toInt());
-    // }
     if (audio != null) {
       WavGenerator wav = new WavGenerator("$_patientId/soundFileSample$_carouselPage", audio);
     }
@@ -127,8 +179,8 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         title: Text('Beats Stethoscope'),
       ),
-      drawer: (_pageNumber == 1) ?  Filter(
-          callback: (){},
+      drawer: (_pageNumber == 1) ? Filter(
+          callback:(){},
           submit:(){}
       ) : Container(),
       body: Navigator(
@@ -192,8 +244,7 @@ class _HomeState extends State<Home> {
                             )
                           )
                         ],
-                      ), 
-                      // BeatsForm(),
+                      )
                     ],
                   )
                   : Container(

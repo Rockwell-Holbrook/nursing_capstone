@@ -20,11 +20,11 @@ class Carousel extends StatefulWidget {
 class _CarouselState extends State<Carousel> {
 
   List<String> photos = [
-    "graphics/aorticPoint.jpg",
-    "graphics/hearsound1.jpg",
-    "graphics/heartsound2.jpg",
-    "graphics/aorticPoint.jpg",
-    "graphics/hearsound1.jpg"
+    "graphics/location1.PNG",
+    "graphics/location2.PNG",
+    "graphics/location3.PNG",
+    "graphics/location4.PNG",
+    "graphics/location5.PNG"
   ];
 
   PageController _pageController;
@@ -96,7 +96,8 @@ class _CarouselState extends State<Carousel> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Image.asset(
-                photos[(index % 5)]
+                photos[(index % 5)],
+                fit: BoxFit.fitHeight,
               ),
             ],
           ),
@@ -110,48 +111,47 @@ class _CarouselState extends State<Carousel> {
     return Center (
         child: Column(
           children: <Widget>[
+            SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: (MediaQuery.of(context).size.height * 0.5),
+              child: PageView.builder(
+                controller: _pageController,
+                physics: const AlwaysScrollableScrollPhysics (),
+                onPageChanged: (value) {
+                  setState(() {
+                  _currentPage = value;
+                  });
+                  callback(value);
+                },
+                itemBuilder: (context, index) => itemBuilder(index),
+                itemCount: 5,
+              )
+            ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 //add buttons before and after expanded
                 (_currentPage > 0) ? Container(
-                  width: 50,
+                  width: 100,
                   child: FlatButton (
                     onPressed: backPage,
                     child: Icon(Icons.arrow_back_ios),
                   ),
                 ) : Container(
-                  width: 50,
-                ),
-                Expanded (
-                  child: SizedBox(
-                    width: (MediaQuery.of(context).size.width * 0.75),
-                    height: (MediaQuery.of(context).size.height * 0.5),
-                    child: PageView.builder(
-                      controller: _pageController,
-                      physics: const AlwaysScrollableScrollPhysics (),
-                      onPageChanged: (value) {
-                        setState(() {
-                        _currentPage = value;
-                        });
-                        callback(value);
-                      },
-                      itemBuilder: (context, index) => itemBuilder(index),
-                      itemCount: 5,
-                    ),
-                  ),
+                  width: 100,
                 ),
                 (_currentPage < photos.length - 1) ? Container(
-                  width: 50,
+                  width: 100,
                   child: FlatButton (
                     onPressed: forwardPage,
                     child: Icon(Icons.arrow_forward_ios),
                   ),
                 ) : Container(
-                  height: 50,
-                  width: 50,
-                  color: Colors.black12,
+                  height: 40,
+                  width: 100,
+                  color: Colors.blue,
                   child: FlatButton(
-                    child: Text('submit'),
+                    child: Text('Submit', style: TextStyle(fontSize: 10.0),),
                     onPressed: submit,
                   )
                 ),

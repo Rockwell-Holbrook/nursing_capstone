@@ -9,13 +9,14 @@ Future<String> new_patient(String user) async
 {
   var url = "https://api.byu-dept-nursingsteth-dev.amazon.byu.edu/beats/patients";
 
-  var request = await post(url, body: JsonEncoder().convert({"created_by": user}));
+  // var request = await post(url, body: JsonEncoder().convert({"created_by": user}));
 
-  final response_body = json.decode(request.body);
+  // final response_body = json.decode(request.body);
 
-  String id = response_body["id"];
+  // String id = response_body["id"];
 
-  return id;
+  // return id;
+  return Future.value('10');
 }
 
 //Writes one file for a patient to the db under the user's credentials

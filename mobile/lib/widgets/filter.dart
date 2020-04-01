@@ -10,6 +10,7 @@ class Filter extends StatefulWidget {
   _FilterState createState() =>
       new _FilterState();
 }
+
 class _FilterState extends State<Filter> {
   bool _dateState = false;
   bool _abnormalState = false;

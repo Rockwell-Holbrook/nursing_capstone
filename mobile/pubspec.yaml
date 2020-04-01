@@ -53,9 +53,11 @@ flutter:
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
   assets:
-  - graphics/aorticPoint.jpg
-  - graphics/hearsound1.jpg
-  - graphics/heartsound2.jpg
+  - graphics/location1.PNG
+  - graphics/location2.PNG
+  - graphics/location3.PNG
+  - graphics/location4.PNG
+  - graphics/location5.PNG
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
