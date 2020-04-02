@@ -18,7 +18,8 @@ mixin AudioPlayerController {
 
   ///Get the current directory
   Future<String> get _localPath async {
-    final directory = await getExternalStorageDirectory();
+    final directory = await getApplicationDocumentsDirectory();
+    //final directory = await getExternalStorageDirectory();
     return directory.path;
   }
 
@@ -30,9 +31,9 @@ mixin AudioPlayerController {
 
   ///Get the audio block requested from local storage and plays it on the phone's current speaker.
   ///Returns an Id of the audio stream if successful, else returns 0
-  Future<int> playLocalAudio(String fileName) async {
+  Future<int> playLocalAudio(String fileName, String userID) async {
     try {
-      _setFilePath(fileName);
+      _setFilePath("$userID/$fileName");
       final file = await localFile;
       int result = await audioPlayer.play(file.toString(), isLocal: true);
       return result;

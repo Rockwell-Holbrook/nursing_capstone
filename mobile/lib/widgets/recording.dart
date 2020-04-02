@@ -42,7 +42,8 @@ class RecordingMic {
   
   ///Get the current directory
   Future<String> get _localPath async {
-    final directory = await getExternalStorageDirectory();
+    final directory = await getApplicationDocumentsDirectory();
+    //final directory = await getExternalStorageDirectory();
     return directory.path;
   }
 
@@ -84,7 +85,7 @@ class RecordingMic {
           var current = await recorder.current(channel: 0);
           //playwav file to speakers here
           callback(current.metering.averagePower);
-          callback(-1 * current.metering.averagePower);
+          //callback(-1 * current.metering.averagePower);
           _current = current;
           _currentStatus = _current.status;
         });
@@ -94,7 +95,7 @@ class RecordingMic {
     });
   }
 
-  void writeAudio() async {
+  Future<bool> writeAudio() async {
     Recording _current;
     RecordingStatus _currentStatus = RecordingStatus.Unset;
 
@@ -137,6 +138,7 @@ class RecordingMic {
           await new Future.delayed(const Duration(seconds : 3));
           File file = localFileSystem.file(result.path);
           Navigator.of(buildContext).pop();
+          return true;
         });
       } else {
         print('error accessing directory');
