@@ -36,6 +36,13 @@ class _FilterState extends State<Filter> {
           ListTile(
               title: Text("Practitioner"),
               trailing: new Checkbox(value: _practitionerState, onChanged: _practitionerStateChanged)
+          ),
+          FlatButton(
+            onPressed: () => widget.callback,
+            child: Container(
+              height: 50,
+              child: Text('Filter'),
+            )
           )
         ],
       ),

@@ -3,11 +3,9 @@ import './tag_recording.dart';
 import '../data/networkRepo.dart';
 
 class RecordingTile extends StatefulWidget {
-  final Function callback;
   final Function submit;
   RecordingTile({
     Key key,
-    @required this.callback,
     @required this.submit
   }): super(key: key);
   @override
@@ -33,6 +31,7 @@ class RecordingsTileState extends State<RecordingTile> {
   void _onEntryPressed(String id, String dateModified, String createdBy, List<String> tags, String abnormal) async {
     Navigator.of(context).push(
         MaterialPageRoute(builder: (context) {
+          GlobalKey<TagRecordingState> key = new GlobalKey();
           return TagRecording(id: id, date: dateModified, name: createdBy, tags: tags, abnormal: abnormal);
         })
     );

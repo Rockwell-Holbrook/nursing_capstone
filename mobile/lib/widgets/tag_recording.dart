@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../mixins/audio_player.dart';
 import '../data/networkRepo.dart';
-import './recording_tile.dart';
 
 class TagRecording extends StatefulWidget {
 
@@ -35,10 +34,10 @@ class TagRecording extends StatefulWidget {
   }
 
   @override
-  _TagRecordingState createState() => new _TagRecordingState();
+  TagRecordingState createState() => new TagRecordingState();
 }
 
-class _TagRecordingState extends State<TagRecording> 
+class TagRecordingState extends State<TagRecording> 
   with AudioPlayerController{
 
   List<String> url;

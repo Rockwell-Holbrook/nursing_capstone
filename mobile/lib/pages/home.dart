@@ -10,6 +10,7 @@ import 'package:mobile/widgets/recording.dart';
 import 'package:mobile/widgets/recording_tile.dart';
 import 'package:mobile/widgets/filter.dart';
 import 'package:mobile/widgets/ExistingRecordingList.dart';
+import 'package:mobile/widgets/tag_recording.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -34,6 +35,7 @@ class _HomeState extends State<Home>
   GlobalKey<NavigatorState> key = new GlobalKey();
   GlobalKey<CarouselDotsState> _keyChild = GlobalKey();
   GlobalKey<ExistingRecordingsState> _recordinList = GlobalKey();
+  GlobalKey<RecordingsTileState> _tileState = GlobalKey();
 
   bool _currentlyRecording;
   String _patientId;
@@ -188,7 +190,9 @@ class _HomeState extends State<Home>
         title: Text('Beats Stethoscope'),
       ),
       drawer: (_pageNumber == 1) ? Filter(
-          callback:(){},
+          callback:(){
+            _tileState.currentState.setState(() { });
+          },
           submit:(){}
       ) : Container(),
       body: Navigator(
@@ -239,7 +243,7 @@ class _HomeState extends State<Home>
                             color: Colors.blue,
                             child: FlatButton(
                               child: Text('Review'),
-                              onPressed: (){
+                              onPressed: () {
                                 playLocalAudio('$_carouselPage', _patientId);
                               },
                             )
@@ -275,7 +279,7 @@ class _HomeState extends State<Home>
                 case '/1':
                   return (_admin) 
                   ? RecordingTile(
-                    callback: (){},
+                    key: _tileState,
                     submit:(){}
                   ) 
                   : Container();

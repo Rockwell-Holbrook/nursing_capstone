@@ -7,7 +7,7 @@ import 'package:dio/dio.dart' as dio;
 //Use when starting to record five audio files
 Future<String> new_patient(String user) async
 {
-  var url = "https://api.byu-dept-nursingsteth-dev.amazon.byu.edu/beats/patients";
+  var url = "https://api.byu-dept-nursingsteth-prd.amazon.byu.edu/beats/patients";
 
   // var request = await post(url, body: JsonEncoder().convert({"created_by": user}));
 
@@ -22,7 +22,7 @@ Future<String> new_patient(String user) async
 //Writes one file for a patient to the db under the user's credentials
 dynamic upload_file(String location, String user, String patient_id, File file) async //user is an email
 {
-  var url = "https://api.byu-dept-nursingsteth-dev.amazon.byu.edu/beats/patients/"+patient_id+"/recordings";
+  var url = "https://api.byu-dept-nursingsteth-prd.amazon.byu.edu/beats/patients/"+patient_id+"/recordings";
 
   var body = {"location": location,
               "created_by": user};
@@ -41,7 +41,7 @@ dynamic upload_file(String location, String user, String patient_id, File file) 
 //To request the next batch of users, run the query again but use the token we had saved
 Future<dynamic> all_patients(String token) async //return next token and all patients
 {
-  var url = "https://api.byu-dept-nursingsteth-dev.amazon.byu.edu/beats/patients/"+token;
+  var url = "https://api.byu-dept-nursingsteth-prd.amazon.byu.edu/beats/patients/"+token;
 
   var request = await get(url);
 
@@ -54,7 +54,7 @@ Future<dynamic> all_patients(String token) async //return next token and all pat
 //Returns a list of URLs that are used in get_recordings to ask for the specific wav file
 Future<List<String>> patient_recordings(String patient_id) async //returns patients recordings as a list
 {
-  var url = "https://api.byu-dept-nursingsteth-dev.amazon.byu.edu/beats/patients/"+patient_id+"/recordings";
+  var url = "https://api.byu-dept-nursingsteth-prd.amazon.byu.edu/beats/patients/"+patient_id+"/recordings";
   var request = await get(url);
   final response_body = json.decode(request.body);
   List<String> recordings = [];
@@ -78,7 +78,7 @@ Future<dynamic> get_recording(String r_url) async //get one recording from url
 ///Pass a string of a filter
 Future<dynamic> filter_list(Map<String, String> filter) async //filter all patients
 {
-  var url = "https://api.byu-dept-nursingsteth-dev.amazon.byu.edu/beats/patients"+filter[''];
+  var url = "https://api.byu-dept-nursingsteth-prd.amazon.byu.edu/beats/patients"+filter[''];
 
   var request = await get(url);
 
@@ -91,7 +91,7 @@ Future<dynamic> filter_list(Map<String, String> filter) async //filter all patie
 //Used when the administrator diagnoses and adds tags
 dynamic update(String patient_id, body) async 
 {
-  var url = "https://api.byu-dept-nursingsteth-dev.amazon.byu.edu/beats/patients/"+patient_id;
+  var url = "https://api.byu-dept-nursingsteth-prd.amazon.byu.edu/beats/patients/"+patient_id;
 
   var request = await put(url, body: JsonEncoder().convert(body));
 
