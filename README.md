@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # mobile
 
 A new Flutter project.
@@ -14,3 +15,7 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+=======
+# nursing_capstone
+IT Capstone Project - Bluetooth Stethescope
+>>>>>>> ba7ed18e209ecf4cb766fed4bb9461d2f07933c6
