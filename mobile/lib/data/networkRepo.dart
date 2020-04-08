@@ -1,33 +1,56 @@
+import 'dart:collection';
 import 'dart:io';
 import 'dart:convert';
 import 'package:http/http.dart';
-import 'package:dio/dio.dart' as dio;
+import 'user.dart';
+
+String dest = 'https://api.byu-dept-nursingsteth-prd.amazon.byu.edu';
+
+///Gets the jwt token tied to the user's session
+///Returns a map that contains the authorization token
+Future<Map<String,String>> authorize() async 
+{
+  User user = new User();
+  
+  String jwt = await user.getSessionToken();
+  
+  Map<String,String> headers = new HashMap();
+  
+  headers['Authorization'] = jwt;
+  
+  return headers;
+}
 
 //creates a new patient and return there UUID
 //Use when starting to record five audio files
 Future<String> new_patient(String user) async
 {
-  var url = "https://api.byu-dept-nursingsteth-prd.amazon.byu.edu/beats/patients";
+  var url = dest + '/patients';
 
-  // var request = await post(url, body: JsonEncoder().convert({"created_by": user}));
+  var header = await authorize();
 
-  // final response_body = json.decode(request.body);
+  var request = await post(
+      url, headers: header, body: JsonEncoder().convert({"created_by": user}));
 
-  // String id = response_body["id"];
+  final response_body = json.decode(request.body);
 
-  // return id;
-  return Future.value('10');
+  String id = response_body["id"];
+
+  return id;
 }
 
 //Writes one file for a patient to the db under the user's credentials
 dynamic upload_file(String location, String user, String patient_id, File file) async //user is an email
 {
-  var url = "https://api.byu-dept-nursingsteth-prd.amazon.byu.edu/beats/patients/"+patient_id+"/recordings";
+  var url = dest + "/patients/"+patient_id+"/recordings";
+
+  var header = await authorize();
 
   var body = {"location": location,
               "created_by": user};
 
-  Response file_url = await post(url, body: JsonEncoder().convert(body));
+  Response file_url = await post(
+      url, headers: header, body: JsonEncoder().convert(body));
 
   final response_body = json.decode(file_url.body);
 
@@ -41,9 +64,12 @@ dynamic upload_file(String location, String user, String patient_id, File file) 
 //To request the next batch of users, run the query again but use the token we had saved
 Future<dynamic> all_patients(String token) async //return next token and all patients
 {
-  var url = "https://api.byu-dept-nursingsteth-prd.amazon.byu.edu/beats/patients/"+token;
+  var url = dest + "/beats/patients/"+token;
 
-  var request = await get(url);
+  var header = await authorize();
+
+  var request = await get(
+      url, headers: header);
 
   final response_body = json.decode(request.body);
 
@@ -54,33 +80,35 @@ Future<dynamic> all_patients(String token) async //return next token and all pat
 //Returns a list of URLs that are used in get_recordings to ask for the specific wav file
 Future<List<String>> patient_recordings(String patient_id) async //returns patients recordings as a list
 {
-  var url = "https://api.byu-dept-nursingsteth-prd.amazon.byu.edu/beats/patients/"+patient_id+"/recordings";
-  var request = await get(url);
+  var url = dest + "/beats/patients/"+patient_id+"/recordings";
+  
+  var header = await authorize();
+
+  var request = await get(
+      url, headers: header);
+  
   final response_body = json.decode(request.body);
+  
   List<String> recordings = [];
+  
   for (int i  = 0; i < response_body["recordings"].length; i++)
   {
     final url = response_body["recordings"].elementAt(i);
     recordings.add(url["url"]);    
   }
+  
   return recordings;
-}
-
-//Use one of the URLs queried from patient_recordings to get the WAV file
-Future<dynamic> get_recording(String r_url) async //get one recording from url
-{
-  dio.Response<List<int>> rs = await dio.Dio().get<List<int>>(r_url,
-  options: dio.Options(responseType: dio.ResponseType.bytes),
-  );
-  return rs.data;
 }
 
 ///Pass a string of a filter
 Future<dynamic> filter_list(Map<String, String> filter) async //filter all patients
 {
-  var url = "https://api.byu-dept-nursingsteth-prd.amazon.byu.edu/beats/patients"+filter[''];
+  var url = dest + "/beats/patients"+filter[''];
 
-  var request = await get(url);
+  var header = await authorize();
+
+  var request = await get(
+      url, headers: header);
 
   final response_body = json.decode(request.body);
 
@@ -91,9 +119,12 @@ Future<dynamic> filter_list(Map<String, String> filter) async //filter all patie
 //Used when the administrator diagnoses and adds tags
 dynamic update(String patient_id, body) async 
 {
-  var url = "https://api.byu-dept-nursingsteth-prd.amazon.byu.edu/beats/patients/"+patient_id;
+  var url = dest + "/beats/patients/"+patient_id;
 
-  var request = await put(url, body: JsonEncoder().convert(body));
+  var header = await authorize();
+
+  var request = await put(
+      url, headers: header, body: JsonEncoder().convert(body));
 
   return request;
 }

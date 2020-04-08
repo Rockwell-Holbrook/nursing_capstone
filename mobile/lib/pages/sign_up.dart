@@ -40,6 +40,7 @@ class _SignUpState extends State<SignUp> {
                   ),
                   new Container(
                     padding: new EdgeInsets.all(20.0),
+                    height: 100,
                     width: MediaQuery.of(context).size.width,
                     child: new RaisedButton(
                       child: new Text(
@@ -117,11 +118,11 @@ class _SignUpState extends State<SignUp> {
                       hintText: 'myUsername', labelText: 'Username'),
                   keyboardType: TextInputType.text,
                   onSaved: (String username) {
-                    if(username.startsWith('admin/')) {
-                      _user.username = username.replaceFirst('admin/', '');
-                    } else {
+                    // if(username.startsWith('admin/')) {
+                    //   _user.username = username.replaceFirst('admin/', '');
+                    // } else {
                       _user.username = username; 
-                    }
+                    // }
                   },
                 )
               ),

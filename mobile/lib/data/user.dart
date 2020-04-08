@@ -219,6 +219,19 @@ class User{
       return passwordReset;
     }
   }
+
+  Future<String> getSessionToken() async {
+    await init();
+    userPool = new CognitoUserPool(userPoolID, appClientID, storage: customStore);
+    final CognitoUser user = await userPool.getCurrentUser();
+    if(user != null) {
+      final session = await user.getSession();
+      print(session.getIdToken().getJwtToken());
+      return session.getIdToken().getJwtToken();
+    } else {
+      return '';
+    }
+  }
 }
 
 class CustomStorage extends CognitoStorage {
