@@ -34,10 +34,16 @@ class RecordingsTileState extends State<RecordingTile> {
           GlobalKey<TagRecordingState> key = new GlobalKey();
           return TagRecording(id: id, date: dateModified, name: createdBy, tags: tags, abnormal: abnormal);
         })
-    );
+    ).then((value) {
+      if(value != null) {
+        setState(() {
+          items[0]['tags'] = value;
+        });
+      }
+    });
   }
 
-  Column displayTags(int i) {
+  Row displayTags(int i) {
     List<String> tagsList = [];
     for(int j = 0; j < items[i]['tags'].length; j++) {
       tagsList.add(items[i]['tags'][j].toString());
@@ -46,8 +52,10 @@ class RecordingsTileState extends State<RecordingTile> {
     List<Text> tagsDisplay = [];
     for(int j = 0; j < tagsList.length; j++) {
       tagsDisplay.add(Text(tagsList[j]));
+      tagsDisplay.add(Text('     '));
     }
-    return Column(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[] + tagsDisplay
     );
   }
@@ -66,56 +74,100 @@ class RecordingsTileState extends State<RecordingTile> {
       height: (MediaQuery.of(context).size.height * 0.65),
       child: ListView(
         children: <Widget>[
-          SizedBox(
-            width: (MediaQuery.of(context).size.width * 0.85),
-            height: (MediaQuery.of(context).size.height * 0.1),
-            child: Row(
-                children: <Widget>[
-                  Padding(
-                      padding: EdgeInsets.all(5)
-                  ),
-                  Expanded(
-                      child: Text("ID")
-                  ),
-                  Expanded(
-                      child: Text("DATE")
-                  ),
-                  Expanded(
-                      child: Text("RECORDER")
-                  ),
-                  Expanded(
-                      child: Text("ABNORMAL")
-                  )
-                ]
-            )
+        Padding(
+          padding: EdgeInsets.all(5),
+          child: Text('Review and Diagnos:', style: TextStyle(fontSize: 18),),
         ),
-        SizedBox(
-          height: (MediaQuery.of(context).size.height * 0.5),
+        Container(
+          height: (MediaQuery.of(context).size.height * 0.8),
           child: ListView.builder(
               itemCount: items.length,
               itemBuilder: (context, index) {
-                //Do Stuff Here
                 return new FlatButton(
                     onPressed: () => _onEntryPressed(items[index]['id'], items[index]['date_modified'], items[index]['created_by'], convertTags(items[index]['tags']), items[index]['abnormal']),
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                            child: Text( items[index]['id'] )
+                    child: Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey.withAlpha(100),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(5.0)
+                          ),
                         ),
-                        Expanded(
-                            child: Text( items[index]['date_modified'] )
-                        ),
-                        Expanded(
-                            child: Text( items[index]['created_by'] )
-                        ),
-                        Expanded(
-                            child: Text( items[index]['abnormal'].toString() )
-                        ),
-                        Expanded(
-                          //Handle null later
-                            child: displayTags(index)
+                        padding: EdgeInsets.all(5),
+                        height: 200,
+                        child: Column(
+                          children: <Widget>[
+                            Row(
+                              children: <Widget>[
+                                Expanded(
+                                  child: Text('ID'),
+                                ),
+                                Expanded(
+                                  flex: 3,
+                                  child: Text( items[index]['id'] )
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: <Widget> [
+                                Expanded(
+                                    child: Text('DATE'),
+                                  ),
+                                Expanded(
+                                  flex: 3,
+                                    child: Text( items[index]['date_modified'] )
+                                )
+                              ],
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: <Widget>[
+                                Expanded(
+                                    child: Text('USER'),
+                                  ),
+                                Expanded(
+                                  flex: 3,
+                                  child: Text( items[index]['created_by'] )
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: <Widget> [
+                                Expanded(
+                                  child: Text('RISK'),
+                                ),
+                                Expanded(
+                                  flex: 3,
+                                    child: Text( items[index]['abnormal'].toString() )
+                                ),
+                              ]
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: <Widget> [
+                                Expanded(
+                                  child: Text('FLAGS'),
+                                ),
+                                Expanded(
+                                  flex: 3,
+                                  child: displayTags(index)
+                                )
+                              ]
+                            )
+                          ],
                         )
-                      ],
+                      )
                     )
                 );
               }

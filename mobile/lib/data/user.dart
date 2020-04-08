@@ -216,6 +216,7 @@ class User{
 
   Future<String> getSessionToken() async {
     await init();
+    await setUserType();
     userPool = new CognitoUserPool(userPoolID, appClientID, storage: customStore);
     final CognitoUser user = await userPool.getCurrentUser();
     if(user != null) {

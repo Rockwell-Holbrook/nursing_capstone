@@ -29,7 +29,7 @@ class TagRecording extends StatefulWidget {
     }
     var body = {"patient": { "tags": tags, "abnormal": tempBool}};
     var result = await update(id, body);
-    Navigator.of(context).pop();
+    Navigator.of(context).pop(tags);
   }
 
   @override
@@ -42,16 +42,16 @@ class TagRecordingState extends State<TagRecording>
   List<String> url;
 
   List<String> options = [
-    'tags1',
-    'tags2',
-    'tags3',
-    'tags4',
-    'tags5',
-    'tags6',
-    'tags7',
-    'tags8',
-    'tags9',
-    'tags10'
+    'Mitral\nStenosis',
+    'Mitral\nRegurgitation',
+    'Aortic\nStenosis',
+    'Aortic\nRegurgitation',
+    'Systolic\nMurmur',
+    'Tricuspid\nRegurgitation',
+    'Diastolic\nMurmur',
+    'Atrial\nSeptal Defect',
+    '3rd/4th\nHeart Sound',
+    'Ventricular\nSeptal'
   ];
 
   void initState() {
@@ -85,7 +85,7 @@ class TagRecordingState extends State<TagRecording>
   bool checkChecked(int i) {
     if(widget.tags.contains(options[i])) {
       return true;
-    } else {
+    } else { 
       return false;
     }
   }

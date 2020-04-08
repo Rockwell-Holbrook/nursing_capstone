@@ -33,7 +33,7 @@ class _SignUpState extends State<SignUp> {
                   Text('A confirmation code has been emailed to you. \n Enter it below to finish creating account:'),
                   new TextFormField(
                     decoration: new InputDecoration(
-                      hintText: 'Code', labelText: 'Confirmarion Code'),
+                      hintText: 'Code', labelText: 'Confirmation Code'),
                     onChanged: (String confirmation) {
                       confirmationCode = confirmation;
                     }

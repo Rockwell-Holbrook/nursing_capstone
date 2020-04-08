@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'user.dart';
 
-String dest = 'https://api.byu-dept-nursingsteth-prd.amazon.byu.edu';
+String dest = 'https://14w1qdsgcg.execute-api.us-west-2.amazonaws.com/prd';
 
 ///Gets the jwt token tied to the user's session
 ///Returns a map that contains the authorization token
@@ -119,7 +119,7 @@ Future<dynamic> filter_list(Map<String, String> filter) async //filter all patie
 //Used when the administrator diagnoses and adds tags
 dynamic update(String patient_id, body) async 
 {
-  var url = dest + "/beats/patients/"+patient_id;
+  var url = dest + "/patients/"+patient_id;
 
   var header = await authorize();
 
