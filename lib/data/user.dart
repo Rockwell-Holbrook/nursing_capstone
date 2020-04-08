@@ -208,8 +208,6 @@ class User{
     bool ready = await init();
     bool passwordReset = false;
     if(ready) {
-      print(confirmationCode);
-      print(nextPassword);
       final cognitoUser = new CognitoUser(username, userPool, storage: userPool.storage);
       try {
         passwordReset = await cognitoUser.confirmPassword(confirmationCode, nextPassword);
