@@ -12,7 +12,6 @@ class TagRecording extends StatefulWidget {
   final List<String> tags;
   final String abnormal;
 
-
   TagRecording({
     @required this.id,
     @required this.date,

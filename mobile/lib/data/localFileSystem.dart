@@ -4,8 +4,8 @@ import 'dart:io';
 
   ///Get the current directory
   Future<String> get _localPath async {
-    final directory = await getApplicationDocumentsDirectory();
-    //final directory = await getExternalStorageDirectory();
+    //final directory = await getApplicationDocumentsDirectory();
+    final directory = await getExternalStorageDirectory();
     return directory.path;
   }
 

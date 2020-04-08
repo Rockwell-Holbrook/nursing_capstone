@@ -87,6 +87,7 @@ class _HomeState extends State<Home>
 
   void _startReading() {
     showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (context) {
 
@@ -142,8 +143,9 @@ class _HomeState extends State<Home>
                       children: <Widget>[
                         FlatButton(
                           child: Text('cancel'),
-                          onPressed:() {
-                            mic.cancel();
+                          onPressed:() async {
+                            await mic.cancel();
+                            Navigator.of(context).pop();
                           }
                         ),
                         FlatButton(
@@ -153,7 +155,7 @@ class _HomeState extends State<Home>
                             Future<bool> ready = recordingMic.init();
                             ready.then((value) async {
                               await recordingMic.writeAudio();
-                              mic.cancel();
+                              await mic.cancel();
                             });
                           }
                         )

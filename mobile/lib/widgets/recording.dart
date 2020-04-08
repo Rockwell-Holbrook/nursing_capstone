@@ -42,8 +42,8 @@ class RecordingMic {
   
   ///Get the current directory
   Future<String> get _localPath async {
-    final directory = await getApplicationDocumentsDirectory();
-    //final directory = await getExternalStorageDirectory();
+    //final directory = await getApplicationDocumentsDirectory();
+    final directory = await getExternalStorageDirectory();
     return directory.path;
   }
 
@@ -69,6 +69,7 @@ class RecordingMic {
   }
   
   void viewAudio()  async {
+    int i = 0;
     Recording _current;
     RecordingStatus _currentStatus = RecordingStatus.Unset;
     var ready = recorder.current(channel: 0);
@@ -84,7 +85,11 @@ class RecordingMic {
 
           var current = await recorder.current(channel: 0);
           //playwav file to speakers here
-          callback(current.metering.averagePower);
+          if(i < 200) {
+            callback(current.metering.averagePower);
+          } else {
+            i++;
+          }
           //callback(-1 * current.metering.averagePower);
           _current = current;
           _currentStatus = _current.status;
@@ -96,6 +101,7 @@ class RecordingMic {
   }
 
   Future<bool> writeAudio() async {
+    int i = 0;
     Recording _current;
     RecordingStatus _currentStatus = RecordingStatus.Unset;
 
@@ -120,9 +126,13 @@ class RecordingMic {
               }
               var current = await recorder.current(channel: 0);
               double power = current.metering.averagePower;
-              if(power > -50 && power < 50) {
-                callback(power);
-                callback(power * -1);
+              if(i < 200) {
+                if(power > -50 && power < 50) {
+                  callback(power);
+                  callback(power * -1);
+                }
+              } else {
+                i++;
               }
               _current = current;
               _currentStatus = _current.status;
@@ -146,10 +156,9 @@ class RecordingMic {
     });
   }
 
-  void cancel() async {
+  Future<bool> cancel() async {
     await recorder.stop();
-    
-    Navigator.of(buildContext).pop();
+    return true;
   }
 
 }

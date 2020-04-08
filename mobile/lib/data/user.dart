@@ -155,9 +155,9 @@ class User{
     } catch (e) {
       print(e);
     }
-    // attributes.forEach((attribute) {
-    //   print('attribute ${attribute.getName()} has value ${attribute.getValue()}');
-    // });
+    attributes.forEach((attribute) {
+      print('attribute ${attribute.getName()} has value ${attribute.getValue()}');
+    });
     return attributes;
   }
 

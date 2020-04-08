@@ -46,7 +46,8 @@ dynamic upload_file(String location, String user, String patient_id, File file) 
 
   var header = await authorize();
 
-  var body = {"location": location,
+  var body = {"pat_id": patient_id,
+              "location": location,
               "created_by": user};
 
   Response file_url = await post(
@@ -64,7 +65,7 @@ dynamic upload_file(String location, String user, String patient_id, File file) 
 //To request the next batch of users, run the query again but use the token we had saved
 Future<dynamic> all_patients(String token) async //return next token and all patients
 {
-  var url = dest + "/beats/patients/"+token;
+  var url = dest + "/patients/"+token;
 
   var header = await authorize();
 
@@ -74,13 +75,12 @@ Future<dynamic> all_patients(String token) async //return next token and all pat
   final response_body = json.decode(request.body);
 
   return(response_body);
-
 }
 
 //Returns a list of URLs that are used in get_recordings to ask for the specific wav file
 Future<List<String>> patient_recordings(String patient_id) async //returns patients recordings as a list
 {
-  var url = dest + "/beats/patients/"+patient_id+"/recordings";
+  var url = dest + "/patients/"+patient_id+"/recordings";
   
   var header = await authorize();
 

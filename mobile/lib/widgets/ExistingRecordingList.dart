@@ -33,15 +33,19 @@ class ExistingRecordingsState extends State<ExistingRecordingList> {
     drs.then((values) {
       drsHolder.addAll(values);
         for(int i = 0; i < drsHolder.length; i++) {
-          Future<List<File>> files = getfilesInDirectory(drsHolder[i]);
-          files.then((value) {
-            if(value.length == 5) {
-              filessystem[drsHolder[i]] = value;
-              setState(() {
-                directories.add(drsHolder[i].substring(drsHolder[i].lastIndexOf('/') + 1));
-              });
-            }
-          });
+          if(drsHolder[i].contains('sample')) {
+            deleteDirectory(drsHolder[i]);
+          } else {
+            Future<List<File>> files = getfilesInDirectory(drsHolder[i]);
+            files.then((value) {
+              if(value.length == 5) {
+                filessystem[drsHolder[i]] = value;
+                setState(() {
+                  directories.add(drsHolder[i].substring(drsHolder[i].lastIndexOf('/') + 1));
+                });
+              }
+            });
+          }
         }
     });
   }
@@ -58,6 +62,9 @@ class ExistingRecordingsState extends State<ExistingRecordingList> {
             if(i == 5) {
               deleteDirectory(key);
               generateFilesFromLocalStorage();
+              setState(() {
+                
+              });
             }
           });
         }
