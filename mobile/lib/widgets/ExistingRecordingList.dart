@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'existing_recording_tile.dart';
 import '../data/localFileSystem.dart';
 import '../data/networkRepo.dart';
+import '../data/user.dart';
 
 class ExistingRecordingList extends StatefulWidget {
 
@@ -51,19 +52,21 @@ class ExistingRecordingsState extends State<ExistingRecordingList> {
   }
 
   submitFiles() async {
+    User user = new User();
+    String username = await user.userName;
+    print(username);
     filessystem.forEach((key, value) {
       if(value.length == 5) {
         int i = 0;
         for(var file in value) {
           String name = file.path.substring(file.path.lastIndexOf('/') + 1);
-          Future<dynamic> holder = upload_file(name.substring(0, name.indexOf('.')), "test@test.com", key.substring(key.lastIndexOf('/') + 1), file);
+          Future<dynamic> holder = upload_file(name.substring(0, name.indexOf('.')), username, key.substring(key.lastIndexOf('/') + 1), file);
           holder.then((value) {
             i++;
             if(i == 5) {
               deleteDirectory(key);
-              generateFilesFromLocalStorage();
               setState(() {
-                
+                directories.removeLast();
               });
             }
           });

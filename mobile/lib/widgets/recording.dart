@@ -85,8 +85,11 @@ class RecordingMic {
 
           var current = await recorder.current(channel: 0);
           //playwav file to speakers here
-          if(i < 200) {
-            callback(current.metering.averagePower);
+          if(i == 50) {
+            double power = current.metering.averagePower;
+            callback(power);
+            callback(power * -1);
+            i = 0;
           } else {
             i++;
           }
@@ -126,14 +129,11 @@ class RecordingMic {
               }
               var current = await recorder.current(channel: 0);
               double power = current.metering.averagePower;
-              if(i < 200) {
                 if(power > -50 && power < 50) {
                   callback(power);
                   callback(power * -1);
+                  i = 0;
                 }
-              } else {
-                i++;
-              }
               _current = current;
               _currentStatus = _current.status;
             });

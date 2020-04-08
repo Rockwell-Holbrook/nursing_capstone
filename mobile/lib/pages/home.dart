@@ -39,6 +39,7 @@ class _HomeState extends State<Home>
 
   bool _currentlyRecording;
   String _patientId;
+  bool _checked;
 
   Oscilloscope oscilloscope;
 
@@ -50,6 +51,8 @@ class _HomeState extends State<Home>
 
     _currentlyRecording = false;
     _patientId = '';
+
+    _checked = false;
 
     oscilloscope = new Oscilloscope(
       yAxisMax: 440,
@@ -229,7 +232,7 @@ class _HomeState extends State<Home>
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
                           Container(
-                            height: 50,
+                            height: 45,
                             width: 100,
                             color: Colors.blue,
                             child: FlatButton(
@@ -240,18 +243,27 @@ class _HomeState extends State<Home>
                             )
                           ),
                           Container(
-                            height: 50,
+                            height: 45,
                             width: 100,
                             color: Colors.blue,
                             child: FlatButton(
                               child: Text('Review'),
                               onPressed: () {
-                                playLocalAudio('$_carouselPage', _patientId);
+                                playLocalAudio('$_carouselPage',  _patientId);
                               },
                             )
                           )
                         ],
-                      )
+                      ),
+                      Text('Abnormal'),
+                      Checkbox(
+                        value: _checked,
+                        onChanged: (checked) {
+                          setState(() {
+                            _checked = checked;
+                          });
+                          ///////Include network call to save that this is abnormal
+                        })
                     ],
                   )
                   : Container(
@@ -437,7 +449,7 @@ class _TracePainter extends CustomPainter {
     int length = dataSet.length;
     if (length > 0) {
       // transform data set to just what we need if bigger than the width(otherwise this would be a memory hog)
-      if (length > size.width) {
+      if (length > size.width/2) {
         dataSet.removeAt(0);
         length = dataSet.length;
       }

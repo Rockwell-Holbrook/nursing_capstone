@@ -148,17 +148,11 @@ class User{
     }
   }
 
-  Future<List<CognitoUserAttribute>> get attributes async {
-    List<CognitoUserAttribute> attributes;
-    try {
-      attributes = await CognitoUser(username, userPool, storage: userPool.storage).getUserAttributes();
-    } catch (e) {
-      print(e);
-    }
-    attributes.forEach((attribute) {
-      print('attribute ${attribute.getName()} has value ${attribute.getValue()}');
-    });
-    return attributes;
+  Future<String> get userName async {
+    await init();
+    setUserType();
+    final CognitoUser user = await userPool.getCurrentUser();
+    return user.username;
   }
 
   Future<bool> checkActiveSession() async {
