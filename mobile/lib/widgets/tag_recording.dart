@@ -42,16 +42,16 @@ class TagRecordingState extends State<TagRecording>
   List<String> url;
 
   List<String> options = [
-    'tags1',
-    'tags2',
-    'tags3',
-    'tags4',
-    'tags5',
-    'tags6',
-    'tags7',
-    'tags8',
-    'tags9',
-    'tags10'
+    'Mitral Stenosis',
+    'Mitral Regurgitation',
+    'Aortic Stenosis',
+    'Aortic Regurgitation',
+    'Systolic Murmur',
+    'Tricuspid Regurgitation',
+    'Diastolic Murmur',
+    'Atrial Septal Defect',
+    '3rd/4th Heart Sound',
+    'Ventricular Septal'
   ];
 
   void initState() {
