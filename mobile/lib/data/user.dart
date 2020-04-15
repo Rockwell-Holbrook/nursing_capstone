@@ -1,6 +1,6 @@
 ///This page holds the classes and functions needed to authenticate
 import 'dart:convert';
-import 'stuff.dart';
+import 'ids.dart';
 import 'package:amazon_cognito_identity_dart/cognito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
