@@ -1,0 +1,50 @@
+PODS:
+  - "!ProtoCompiler (3.8.0)":
+    - Protobuf (~> 3.0)
+  - audiofileplayer (0.0.1):
+    - Flutter
+  - Flutter (1.0.0)
+  - flutter_blue (0.0.1):
+    - "!ProtoCompiler"
+    - Flutter
+    - flutter_blue/Protos (= 0.0.1)
+  - flutter_blue/Protos (0.0.1):
+    - "!ProtoCompiler"
+    - Flutter
+    - Protobuf
+  - path_provider (0.0.1):
+    - Flutter
+  - Protobuf (3.11.0)
+
+DEPENDENCIES:
+  - audiofileplayer (from `.symlinks/plugins/audiofileplayer/ios`)
+  - Flutter (from `Flutter`)
+  - flutter_blue (from `.symlinks/plugins/flutter_blue/ios`)
+  - path_provider (from `.symlinks/plugins/path_provider/ios`)
+
+SPEC REPOS:
+  trunk:
+    - "!ProtoCompiler"
+    - Protobuf
+
+EXTERNAL SOURCES:
+  audiofileplayer:
+    :path: ".symlinks/plugins/audiofileplayer/ios"
+  Flutter:
+    :path: Flutter
+  flutter_blue:
+    :path: ".symlinks/plugins/flutter_blue/ios"
+  path_provider:
+    :path: ".symlinks/plugins/path_provider/ios"
+
+SPEC CHECKSUMS:
+  "!ProtoCompiler": 7fc49078ec544d0347264496f6cd09b8132536b5
+  audiofileplayer: 4aaff759a721ec3a850a682e0d9ec554e5f9e86f
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  flutter_blue: b8fd0a39684964cf7406205dbd396430e6420b58
+  path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
+  Protobuf: 394b2bf29ec303f4325e3ee4892c09e675647152
+
+PODFILE CHECKSUM: 083258d7f5e80b42ea9bfee905fe93049bc04c64
+
+COCOAPODS: 1.8.4
