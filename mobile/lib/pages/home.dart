@@ -7,6 +7,7 @@ import 'package:mobile/widgets/carousel.dart';
 import 'package:mobile/widgets/recording.dart';
 //import 'package:/widgets/wavGenerator.dart';
 // import 'package:omobilescilloscope/oscilloscope.dart';
+import 'package:mobile/data/user.dart';
 import 'package:mobile/widgets/recording_tile.dart';
 import 'package:mobile/widgets/filter.dart';
 import 'package:mobile/widgets/ExistingRecordingList.dart';
@@ -45,7 +46,7 @@ class _HomeState extends State<Home>
 
   void initState() {
     super.initState();
-    _admin = true;
+    setAdmin();
     _pageNumber = 0;
     _carouselPage = 0;
 
@@ -59,6 +60,15 @@ class _HomeState extends State<Home>
       yAxisMin: -440,
       dataSet: []
     );
+  }
+
+  void setAdmin() async {
+    User user = new User();
+    await user.init();
+    await user.setUserType();
+    setState(() {
+      _admin = user.admin;
+    });
   }
 
   List<BottomNavigationBarItem> items = [

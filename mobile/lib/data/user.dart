@@ -9,6 +9,7 @@ class User{
   String username;
   String email;
   String password;
+  bool admin;
   CognitoUserPool userPool;
   CognitoUserSession session;
 
@@ -29,8 +30,10 @@ class User{
   ///Updates the default user of this phone to be an admin
   Future<bool> saveAsAdmin(String uname) async {
     if(uname.contains('admin/')) {
+      admin = true;
       await prefs.setString('admin', 'admin');
     } else {
+      admin = false;
       await prefs.setString('admin', '');
     }
     return true;
@@ -44,8 +47,10 @@ class User{
       type = temp;
     }
     if(type == 'admin') {
+      admin = true;
       userPool = new CognitoUserPool(userPoolID, adminAppClientID, storage: customStore);
     } else {
+      admin = false;
       userPool = new CognitoUserPool(userPoolID, appClientID, storage: customStore);
     }
   }
